@@ -22,10 +22,24 @@
 		1CF0A6D120A8C09B004C26EA /* ImageOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6CF20A8C09B004C26EA /* ImageOperations.swift */; };
 		1CF0A6D320A8C911004C26EA /* WriteMultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6D220A8C911004C26EA /* WriteMultipartFormData.swift */; };
 		1CF0A6D420A8C911004C26EA /* WriteMultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6D220A8C911004C26EA /* WriteMultipartFormData.swift */; };
+		1CF0A6DC20A8E27F004C26EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6DB20A8E27F004C26EA /* AppDelegate.swift */; };
+		1CF0A6DE20A8E27F004C26EA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6DD20A8E27F004C26EA /* ViewController.swift */; };
+		1CF0A6E120A8E27F004C26EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0A6DF20A8E27F004C26EA /* Main.storyboard */; };
+		1CF0A6E320A8E285004C26EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0A6E220A8E285004C26EA /* Assets.xcassets */; };
+		1CF0A6E620A8E285004C26EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0A6E420A8E285004C26EA /* LaunchScreen.storyboard */; };
+		1CF0A6ED20A8E73F004C26EA /* ImgurUploader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0A693209FC612004C26EA /* ImgurUploader.framework */; };
+		1CF0A6EE20A8E73F004C26EA /* ImgurUploader.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0A693209FC612004C26EA /* ImgurUploader.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		1CF0A6B9209FE192004C26EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1CF0A68A209FC612004C26EA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1CF0A692209FC612004C26EA;
+			remoteInfo = ImgurUploader;
+		};
+		1CF0A6EF20A8E73F004C26EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1CF0A68A209FC612004C26EA /* Project object */;
 			proxyType = 1;
@@ -42,6 +56,17 @@
 			dstSubfolderSpec = 16;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1CF0A6F120A8E73F004C26EA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1CF0A6EE20A8E73F004C26EA /* ImgurUploader.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -66,6 +91,13 @@
 		1CF0A6CC20A8BFDC004C26EA /* URLSessionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLSessionOperations.swift; path = ImgurUploader/URLSessionOperations.swift; sourceTree = "<group>"; };
 		1CF0A6CF20A8C09B004C26EA /* ImageOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageOperations.swift; path = ImgurUploader/ImageOperations.swift; sourceTree = "<group>"; };
 		1CF0A6D220A8C911004C26EA /* WriteMultipartFormData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WriteMultipartFormData.swift; path = ImgurUploader/WriteMultipartFormData.swift; sourceTree = "<group>"; };
+		1CF0A6D920A8E27E004C26EA /* ImgurUploader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImgurUploader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CF0A6DB20A8E27F004C26EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1CF0A6DD20A8E27F004C26EA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1CF0A6E020A8E27F004C26EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1CF0A6E220A8E285004C26EA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1CF0A6E520A8E285004C26EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1CF0A6E720A8E285004C26EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +123,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1CF0A6D620A8E27E004C26EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CF0A6ED20A8E73F004C26EA /* ImgurUploader.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -103,7 +143,9 @@
 				1CF0A694209FC612004C26EA /* Products */,
 				1CF0A6AE209FC817004C26EA /* README.md */,
 				1CF0A69E209FC66A004C26EA /* Sources */,
+				1CF0A6DA20A8E27F004C26EA /* Test App */,
 				1CF0A6B4209FE192004C26EA /* Tests */,
+				1CF0A6EB20A8E2E6004C26EA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -113,6 +155,7 @@
 				1CF0A693209FC612004C26EA /* ImgurUploader.framework */,
 				1CF0A6A6209FC6A3004C26EA /* libImgurUploader.a */,
 				1CF0A6B3209FE192004C26EA /* ImgurUploaderTests.xctest */,
+				1CF0A6D920A8E27E004C26EA /* ImgurUploader.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -157,6 +200,26 @@
 				1CF0A6C0209FE471004C26EA /* Package.swift */,
 			);
 			name = Distribution;
+			sourceTree = "<group>";
+		};
+		1CF0A6DA20A8E27F004C26EA /* Test App */ = {
+			isa = PBXGroup;
+			children = (
+				1CF0A6DB20A8E27F004C26EA /* AppDelegate.swift */,
+				1CF0A6E220A8E285004C26EA /* Assets.xcassets */,
+				1CF0A6E720A8E285004C26EA /* Info.plist */,
+				1CF0A6E420A8E285004C26EA /* LaunchScreen.storyboard */,
+				1CF0A6DF20A8E27F004C26EA /* Main.storyboard */,
+				1CF0A6DD20A8E27F004C26EA /* ViewController.swift */,
+			);
+			path = "Test App";
+			sourceTree = "<group>";
+		};
+		1CF0A6EB20A8E2E6004C26EA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -226,6 +289,25 @@
 			productReference = 1CF0A6B3209FE192004C26EA /* ImgurUploaderTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		1CF0A6D820A8E27E004C26EA /* iOSTestApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CF0A6E820A8E285004C26EA /* Build configuration list for PBXNativeTarget "iOSTestApp" */;
+			buildPhases = (
+				1CF0A6D520A8E27E004C26EA /* Sources */,
+				1CF0A6D620A8E27E004C26EA /* Frameworks */,
+				1CF0A6D720A8E27E004C26EA /* Resources */,
+				1CF0A6F120A8E73F004C26EA /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1CF0A6F020A8E73F004C26EA /* PBXTargetDependency */,
+			);
+			name = iOSTestApp;
+			productName = iOSTestApp;
+			productReference = 1CF0A6D920A8E27E004C26EA /* ImgurUploader.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -245,6 +327,9 @@
 					1CF0A6B2209FE192004C26EA = {
 						CreatedOnToolsVersion = 9.3;
 					};
+					1CF0A6D820A8E27E004C26EA = {
+						CreatedOnToolsVersion = 9.3;
+					};
 				};
 			};
 			buildConfigurationList = 1CF0A68D209FC612004C26EA /* Build configuration list for PBXProject "ImgurUploader" */;
@@ -253,6 +338,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 1CF0A689209FC612004C26EA;
 			productRefGroup = 1CF0A694209FC612004C26EA /* Products */;
@@ -262,6 +348,7 @@
 				1CF0A692209FC612004C26EA /* ImgurUploader */,
 				1CF0A6A5209FC6A3004C26EA /* ImgurUploader-Static */,
 				1CF0A6B2209FE192004C26EA /* ImgurUploaderTests */,
+				1CF0A6D820A8E27E004C26EA /* iOSTestApp */,
 			);
 		};
 /* End PBXProject section */
@@ -278,6 +365,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1CF0A6D720A8E27E004C26EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CF0A6E620A8E285004C26EA /* LaunchScreen.storyboard in Resources */,
+				1CF0A6E320A8E285004C26EA /* Assets.xcassets in Resources */,
+				1CF0A6E120A8E27F004C26EA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +415,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1CF0A6D520A8E27E004C26EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CF0A6DE20A8E27F004C26EA /* ViewController.swift in Sources */,
+				1CF0A6DC20A8E27F004C26EA /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -326,7 +432,31 @@
 			target = 1CF0A692209FC612004C26EA /* ImgurUploader */;
 			targetProxy = 1CF0A6B9209FE192004C26EA /* PBXContainerItemProxy */;
 		};
+		1CF0A6F020A8E73F004C26EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1CF0A692209FC612004C26EA /* ImgurUploader */;
+			targetProxy = 1CF0A6EF20A8E73F004C26EA /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		1CF0A6DF20A8E27F004C26EA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1CF0A6E020A8E27F004C26EA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		1CF0A6E420A8E285004C26EA /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1CF0A6E520A8E285004C26EA /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1CF0A699209FC612004C26EA /* Debug */ = {
@@ -561,6 +691,46 @@
 			};
 			name = Release;
 		};
+		1CF0A6E920A8E285004C26EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Test App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader.iOSTestApp;
+				PRODUCT_MODULE_NAME = iOSTestApp;
+				PRODUCT_NAME = ImgurUploader;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1CF0A6EA20A8E285004C26EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Test App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader.iOSTestApp;
+				PRODUCT_MODULE_NAME = iOSTestApp;
+				PRODUCT_NAME = ImgurUploader;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -596,6 +766,15 @@
 			buildConfigurations = (
 				1CF0A6BC209FE192004C26EA /* Debug */,
 				1CF0A6BD209FE192004C26EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1CF0A6E820A8E285004C26EA /* Build configuration list for PBXNativeTarget "iOSTestApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CF0A6E920A8E285004C26EA /* Debug */,
+				1CF0A6EA20A8E285004C26EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
