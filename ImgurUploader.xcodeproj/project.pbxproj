@@ -12,6 +12,16 @@
 		1CF0A6AD209FC6B5004C26EA /* ImgurUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6A0209FC66A004C26EA /* ImgurUploader.swift */; };
 		1CF0A6B6209FE192004C26EA /* ImgurUploaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6B5209FE192004C26EA /* ImgurUploaderTests.swift */; };
 		1CF0A6B8209FE192004C26EA /* ImgurUploader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0A693209FC612004C26EA /* ImgurUploader.framework */; };
+		1CF0A6C720A8BEB9004C26EA /* AsynchronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6C620A8BEB9004C26EA /* AsynchronousOperation.swift */; };
+		1CF0A6C820A8BEB9004C26EA /* AsynchronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6C620A8BEB9004C26EA /* AsynchronousOperation.swift */; };
+		1CF0A6CA20A8BF8D004C26EA /* TemporaryFolderOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6C920A8BF8D004C26EA /* TemporaryFolderOperations.swift */; };
+		1CF0A6CB20A8BF8D004C26EA /* TemporaryFolderOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6C920A8BF8D004C26EA /* TemporaryFolderOperations.swift */; };
+		1CF0A6CD20A8BFDC004C26EA /* URLSessionOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6CC20A8BFDC004C26EA /* URLSessionOperations.swift */; };
+		1CF0A6CE20A8BFDC004C26EA /* URLSessionOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6CC20A8BFDC004C26EA /* URLSessionOperations.swift */; };
+		1CF0A6D020A8C09B004C26EA /* ImageOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6CF20A8C09B004C26EA /* ImageOperations.swift */; };
+		1CF0A6D120A8C09B004C26EA /* ImageOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6CF20A8C09B004C26EA /* ImageOperations.swift */; };
+		1CF0A6D320A8C911004C26EA /* WriteMultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6D220A8C911004C26EA /* WriteMultipartFormData.swift */; };
+		1CF0A6D420A8C911004C26EA /* WriteMultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6D220A8C911004C26EA /* WriteMultipartFormData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +61,11 @@
 		1CF0A6C2209FE486004C26EA /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1CF0A6C3209FE49F004C26EA /* XCTestManifests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = XCTestManifests.swift; path = ImgurUploaderTests/XCTestManifests.swift; sourceTree = "<group>"; };
 		1CF0A6C4209FE4A5004C26EA /* LinuxMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
+		1CF0A6C620A8BEB9004C26EA /* AsynchronousOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AsynchronousOperation.swift; path = ImgurUploader/AsynchronousOperation.swift; sourceTree = "<group>"; };
+		1CF0A6C920A8BF8D004C26EA /* TemporaryFolderOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemporaryFolderOperations.swift; path = ImgurUploader/TemporaryFolderOperations.swift; sourceTree = "<group>"; };
+		1CF0A6CC20A8BFDC004C26EA /* URLSessionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLSessionOperations.swift; path = ImgurUploader/URLSessionOperations.swift; sourceTree = "<group>"; };
+		1CF0A6CF20A8C09B004C26EA /* ImageOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageOperations.swift; path = ImgurUploader/ImageOperations.swift; sourceTree = "<group>"; };
+		1CF0A6D220A8C911004C26EA /* WriteMultipartFormData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WriteMultipartFormData.swift; path = ImgurUploader/WriteMultipartFormData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,7 +129,12 @@
 		1CF0A69E209FC66A004C26EA /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1CF0A6C620A8BEB9004C26EA /* AsynchronousOperation.swift */,
+				1CF0A6CF20A8C09B004C26EA /* ImageOperations.swift */,
 				1CF0A6A0209FC66A004C26EA /* ImgurUploader.swift */,
+				1CF0A6C920A8BF8D004C26EA /* TemporaryFolderOperations.swift */,
+				1CF0A6CC20A8BFDC004C26EA /* URLSessionOperations.swift */,
+				1CF0A6D220A8C911004C26EA /* WriteMultipartFormData.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -268,7 +288,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CF0A6D320A8C911004C26EA /* WriteMultipartFormData.swift in Sources */,
+				1CF0A6CD20A8BFDC004C26EA /* URLSessionOperations.swift in Sources */,
 				1CF0A6A1209FC66B004C26EA /* ImgurUploader.swift in Sources */,
+				1CF0A6C720A8BEB9004C26EA /* AsynchronousOperation.swift in Sources */,
+				1CF0A6CA20A8BF8D004C26EA /* TemporaryFolderOperations.swift in Sources */,
+				1CF0A6D020A8C09B004C26EA /* ImageOperations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +301,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CF0A6D420A8C911004C26EA /* WriteMultipartFormData.swift in Sources */,
+				1CF0A6CE20A8BFDC004C26EA /* URLSessionOperations.swift in Sources */,
 				1CF0A6AD209FC6B5004C26EA /* ImgurUploader.swift in Sources */,
+				1CF0A6C820A8BEB9004C26EA /* AsynchronousOperation.swift in Sources */,
+				1CF0A6CB20A8BF8D004C26EA /* TemporaryFolderOperations.swift in Sources */,
+				1CF0A6D120A8C09B004C26EA /* ImageOperations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
