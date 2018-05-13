@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1CF0A6A5209FC6A3004C26EA"
-               BuildableName = "libImgurUploader-Static.a"
+               BuildableName = "libImgurUploader.a"
                BlueprintName = "ImgurUploader-Static"
                ReferencedContainer = "container:ImgurUploader.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1CF0A6A5209FC6A3004C26EA"
-            BuildableName = "libImgurUploader-Static.a"
+            BuildableName = "libImgurUploader.a"
             BlueprintName = "ImgurUploader-Static"
             ReferencedContainer = "container:ImgurUploader.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1CF0A6A5209FC6A3004C26EA"
-            BuildableName = "libImgurUploader-Static.a"
+            BuildableName = "libImgurUploader.a"
             BlueprintName = "ImgurUploader-Static"
             ReferencedContainer = "container:ImgurUploader.xcodeproj">
          </BuildableReference>

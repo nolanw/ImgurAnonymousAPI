@@ -51,7 +51,7 @@
 		1CF0A696209FC612004C26EA /* ImgurUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImgurUploader.h; sourceTree = "<group>"; };
 		1CF0A697209FC612004C26EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CF0A6A0209FC66A004C26EA /* ImgurUploader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImgurUploader.swift; path = ImgurUploader/ImgurUploader.swift; sourceTree = "<group>"; };
-		1CF0A6A6209FC6A3004C26EA /* libImgurUploader-Static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libImgurUploader-Static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CF0A6A6209FC6A3004C26EA /* libImgurUploader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libImgurUploader.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CF0A6AE209FC817004C26EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1CF0A6B3209FE192004C26EA /* ImgurUploaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImgurUploaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CF0A6B5209FE192004C26EA /* ImgurUploaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImgurUploaderTests.swift; path = ImgurUploaderTests/ImgurUploaderTests.swift; sourceTree = "<group>"; };
@@ -111,7 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				1CF0A693209FC612004C26EA /* ImgurUploader.framework */,
-				1CF0A6A6209FC6A3004C26EA /* libImgurUploader-Static.a */,
+				1CF0A6A6209FC6A3004C26EA /* libImgurUploader.a */,
 				1CF0A6B3209FE192004C26EA /* ImgurUploaderTests.xctest */,
 			);
 			name = Products;
@@ -205,7 +205,7 @@
 			);
 			name = "ImgurUploader-Static";
 			productName = "ImgurUploader-Static";
-			productReference = 1CF0A6A6209FC6A3004C26EA /* libImgurUploader-Static.a */;
+			productReference = 1CF0A6A6209FC6A3004C26EA /* libImgurUploader.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		1CF0A6B2209FE192004C26EA /* ImgurUploaderTests */ = {
@@ -503,7 +503,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9RR6L9X39A;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ImgurUploader;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 			};
@@ -515,7 +515,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9RR6L9X39A;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ImgurUploader;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 			};
