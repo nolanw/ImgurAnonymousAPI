@@ -39,7 +39,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EGU-9c-5zG" userLabel="Content View">
-                                        <rect key="frame" x="16" y="0.0" width="343" height="171.5"/>
+                                        <rect key="frame" x="16" y="0.0" width="343" height="292"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="FqN-pg-ezM">
                                                 <rect key="frame" x="0.0" y="16" width="343" height="44.5"/>
@@ -68,8 +68,60 @@
                                                     <action selector="didTapCheckRateLimits:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="blA-ab-6RG"/>
                                                 </connections>
                                             </button>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zbb-zW-XCb">
+                                                <rect key="frame" x="0.0" y="122.5" width="343" height="104.5"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Upload" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="82K-EA-GmR">
+                                                        <rect key="frame" x="0.0" y="0.0" width="343" height="14.5"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iKS-G4-cCn">
+                                                        <rect key="frame" x="0.0" y="14.5" width="343" height="90"/>
+                                                        <subviews>
+                                                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vuv-th-KKq">
+                                                                <rect key="frame" x="0.0" y="0.0" width="255" height="90"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="90" id="6wT-Wn-SIe"/>
+                                                                </constraints>
+                                                                <state key="normal" title="Image"/>
+                                                                <connections>
+                                                                    <action selector="didTapImage:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="XHt-k3-nU9"/>
+                                                                </connections>
+                                                            </button>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="546-c5-whK">
+                                                                <rect key="frame" x="255" y="0.0" width="88" height="90"/>
+                                                                <subviews>
+                                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F0r-vK-bCc">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="88" height="30"/>
+                                                                        <state key="normal" title="As PHAsset"/>
+                                                                        <connections>
+                                                                            <action selector="didTapUploadAsPHAsset:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="ike-6S-dFr"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u1d-AJ-L9m">
+                                                                        <rect key="frame" x="0.0" y="30" width="88" height="30"/>
+                                                                        <state key="normal" title="As UIImage"/>
+                                                                        <connections>
+                                                                            <action selector="didTapUploadAsUIImage:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Bpv-Bg-Bz9"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TFH-kw-Nvy">
+                                                                        <rect key="frame" x="0.0" y="60" width="88" height="30"/>
+                                                                        <state key="normal" title="As Whatever"/>
+                                                                        <connections>
+                                                                            <action selector="didTapUploadAsWhatever:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="PX1-oC-sRz"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                </subviews>
+                                            </stackView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zcT-wt-0qp">
-                                                <rect key="frame" x="0.0" y="122.5" width="343" height="33"/>
+                                                <rect key="frame" x="0.0" y="243" width="343" height="33"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <color key="textColor" red="0.37055522200000002" green="0.37056469920000001" blue="0.37055957319999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -81,13 +133,16 @@
                                             <constraint firstItem="c0m-e4-v2X" firstAttribute="top" secondItem="FqN-pg-ezM" secondAttribute="bottom" constant="16" id="0o1-rd-peT"/>
                                             <constraint firstAttribute="trailing" secondItem="zcT-wt-0qp" secondAttribute="trailing" id="3sl-2P-HpF"/>
                                             <constraint firstItem="zcT-wt-0qp" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="EE5-2D-wUR"/>
+                                            <constraint firstAttribute="trailing" secondItem="zbb-zW-XCb" secondAttribute="trailing" id="F3w-Qp-P7h"/>
                                             <constraint firstItem="FqN-pg-ezM" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="LL6-MR-riY"/>
+                                            <constraint firstItem="zcT-wt-0qp" firstAttribute="top" secondItem="zbb-zW-XCb" secondAttribute="bottom" constant="16" id="Qas-o9-orB"/>
                                             <constraint firstItem="FqN-pg-ezM" firstAttribute="top" secondItem="EGU-9c-5zG" secondAttribute="top" constant="16" id="b4O-Ub-QzN"/>
-                                            <constraint firstItem="zcT-wt-0qp" firstAttribute="top" secondItem="c0m-e4-v2X" secondAttribute="bottom" constant="16" id="e0c-0F-puW"/>
                                             <constraint firstAttribute="trailing" secondItem="c0m-e4-v2X" secondAttribute="trailing" id="fkD-eO-rlG"/>
+                                            <constraint firstItem="zbb-zW-XCb" firstAttribute="top" secondItem="c0m-e4-v2X" secondAttribute="bottom" constant="16" id="h1n-it-FFN"/>
                                             <constraint firstAttribute="trailing" secondItem="FqN-pg-ezM" secondAttribute="trailing" id="h5X-iY-YMU"/>
                                             <constraint firstAttribute="bottom" secondItem="zcT-wt-0qp" secondAttribute="bottom" constant="16" id="hjA-3p-uEr"/>
                                             <constraint firstItem="c0m-e4-v2X" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="kg4-NJ-rat"/>
+                                            <constraint firstItem="zbb-zW-XCb" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="tIg-Vs-c7o"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -112,9 +167,14 @@
                     </view>
                     <navigationItem key="navigationItem" id="uLU-2k-eUs"/>
                     <connections>
+                        <outlet property="imageButton" destination="Vuv-th-KKq" id="WcM-tl-FsM"/>
                         <outlet property="resultsTextView" destination="zcT-wt-0qp" id="4TA-rM-DXA"/>
                         <outletCollection property="controls" destination="MrE-BO-aQ8" collectionClass="NSMutableArray" id="okk-XY-TsE"/>
                         <outletCollection property="controls" destination="c0m-e4-v2X" collectionClass="NSMutableArray" id="fkW-OX-q7b"/>
+                        <outletCollection property="controls" destination="Vuv-th-KKq" collectionClass="NSMutableArray" id="pEa-Ju-WJA"/>
+                        <outletCollection property="controls" destination="F0r-vK-bCc" collectionClass="NSMutableArray" id="EUW-r8-yqR"/>
+                        <outletCollection property="controls" destination="u1d-AJ-L9m" collectionClass="NSMutableArray" id="kVL-E1-VUB"/>
+                        <outletCollection property="controls" destination="TFH-kw-Nvy" collectionClass="NSMutableArray" id="vmj-W1-KSp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

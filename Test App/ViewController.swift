@@ -7,14 +7,17 @@
 //
 
 import ImgurUploader
+import Photos
 import UIKit
 
 final class ViewController: UIViewController {
     private var clientID: String = ""
+    private var imagePickerInfo: ImgurUploader.UIImagePickerControllerInfo?
     private var uploader: ImgurUploader?
 
     @IBOutlet private var controls: [UIControl]!
-    @IBOutlet weak var resultsTextView: UITextView!
+    @IBOutlet private weak var imageButton: UIButton!
+    @IBOutlet private weak var resultsTextView: UITextView!
 
     @IBAction func didChangeClientID(_ sender: UITextField) {
         clientID = sender.text ?? ""
@@ -26,6 +29,51 @@ final class ViewController: UIViewController {
             let uploader = try obtainUploader()
             beginOperation()
             uploader.checkRateLimitStatus {
+                self.endOperation($0)
+            }
+        } catch {
+            alert(error)
+        }
+    }
+
+    @IBAction func didTapImage(_ sender: Any) {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+
+    @IBAction func didTapUploadAsPHAsset(_ sender: Any) {
+        do {
+            let uploader = try obtainUploader()
+            let info = try obtainPHAsset()
+            beginOperation()
+            uploader.upload(info) {
+                self.endOperation($0)
+            }
+        } catch {
+            alert(error)
+        }
+    }
+
+    @IBAction func didTapUploadAsUIImage(_ sender: Any) {
+        do {
+            let uploader = try obtainUploader()
+            let info = try obtainUIImage()
+            beginOperation()
+            uploader.upload(info) {
+                self.endOperation($0)
+            }
+        } catch {
+            alert(error)
+        }
+    }
+
+    @IBAction func didTapUploadAsWhatever(_ sender: Any) {
+        do {
+            let uploader = try obtainUploader()
+            let info = try obtainImagePickerInfo()
+            beginOperation()
+            uploader.upload(info) {
                 self.endOperation($0)
             }
         } catch {
@@ -75,6 +123,46 @@ final class ViewController: UIViewController {
         self.uploader = uploader
         return uploader
     }
+
+    private func obtainImagePickerInfo() throws -> ImgurUploader.UIImagePickerControllerInfo {
+        if let info = imagePickerInfo {
+            return info
+        } else {
+            throw MissingImage()
+        }
+    }
+
+    private func obtainPHAsset() throws -> PHAsset {
+        if #available(iOS 11.0, *), let asset = imagePickerInfo?[UIImagePickerControllerPHAsset] as? PHAsset {
+            return asset
+        } else {
+            throw MissingImage()
+        }
+    }
+
+    private func obtainUIImage() throws -> UIImage {
+        if let image = imagePickerInfo?[UIImagePickerControllerEditedImage] as? UIImage {
+            return image
+        } else if let image = imagePickerInfo?[UIImagePickerControllerOriginalImage] as? UIImage {
+            return image
+        } else {
+            throw MissingImage()
+        }
+    }
 }
 
 struct MissingClientID: Error {}
+struct MissingImage: Error {}
+
+extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
+        imagePickerInfo = info
+
+        let image = info[UIImagePickerControllerEditedImage] as? UIImage
+            ?? info[UIImagePickerControllerOriginalImage] as? UIImage
+        imageButton.setImage(image, for: .normal)
+        imageButton.setTitle(image == nil ? "Image" : nil, for: .normal)
+
+        dismiss(animated: true)
+    }
+}

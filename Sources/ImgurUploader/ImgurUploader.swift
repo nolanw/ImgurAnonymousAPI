@@ -61,39 +61,7 @@ extension ImgurUploader {
     // completion block called on main queue
     @discardableResult
     public func upload(_ asset: PHAsset, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
-        let upload = UploadFormData()
-        let ops: [Operation] = [
-            MakeTempFolder(),
-            SavePHAsset(),
-            WriteMultipartFormData(),
-            upload,
-            DeleteTempFolder()]
-
-        for (one, two) in zip(ops, ops.dropFirst()) {
-            one.addDependency(two)
-        }
-
-        log(.debug, "starting upload of \(asset)")
-        queue.addOperations(ops, waitUntilFinished: false)
-
-        let progress = Progress(totalUnitCount: 1)
-        progress.cancellationHandler = {
-            log(.debug, "cancelling upload of \(asset)")
-            for op in ops {
-                op.cancel()
-            }
-        }
-
-        let completionOp = BlockOperation {
-            let result = upload.result!
-            log(.debug, "finishing upload of \(asset) with \(result)")
-            progress.completedUnitCount = 1
-            completion(result)
-        }
-        completionOp.addDependency(ops.last!)
-        OperationQueue.main.addOperation(completionOp)
-
-        return progress
+        return upload(imageSaveOperation: SavePHAsset(asset), completion: completion)
     }
 }
 #endif
@@ -109,39 +77,7 @@ extension ImgurUploader {
     // completion block called on main queue
     @discardableResult
     public func upload(_ image: UIImage, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
-        let upload = UploadFormData()
-        let ops: [Operation] = [
-            MakeTempFolder(),
-            SaveUIImage(),
-            WriteMultipartFormData(),
-            upload,
-            DeleteTempFolder()]
-
-        for (one, two) in zip(ops, ops.dropFirst()) {
-            one.addDependency(two)
-        }
-
-        log(.debug, "starting upload of \(image)")
-        queue.addOperations(ops, waitUntilFinished: false)
-
-        let progress = Progress(totalUnitCount: 1)
-        progress.cancellationHandler = {
-            log(.debug, "cancelling upload of \(image)")
-            for op in ops {
-                op.cancel()
-            }
-        }
-
-        let completionOp = BlockOperation {
-            let result = upload.result!
-            log(.debug, "finishing upload of \(image) with \(result)")
-            progress.completedUnitCount = 1
-            completion(result)
-        }
-        completionOp.addDependency(ops.last!)
-        OperationQueue.main.addOperation(completionOp)
-
-        return progress
+        return upload(imageSaveOperation: SaveUIImage(image), completion: completion)
     }
 
     // returned progress supports cancellation
@@ -186,9 +122,44 @@ extension ImgurUploader {
 }
 #endif
 
-// MARK: - Upload types
+// MARK: - Generic uploading and support
 
 extension ImgurUploader {
+    private func upload(imageSaveOperation: Operation, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
+        let upload = UploadFormData()
+        let ops: [Operation] = [
+            MakeTempFolder(),
+            imageSaveOperation,
+            WriteMultipartFormData(),
+            upload,
+            DeleteTempFolder()]
+
+        for (before, after) in zip(ops, ops.dropFirst()) {
+            after.addDependency(before)
+        }
+
+        log(.debug, "starting upload of \(imageSaveOperation)")
+        queue.addOperations(ops, waitUntilFinished: false)
+
+        let progress = Progress(totalUnitCount: 1)
+        progress.cancellationHandler = {
+            log(.debug, "cancelling upload of \(imageSaveOperation)")
+            for op in ops {
+                op.cancel()
+            }
+        }
+
+        let completionOp = BlockOperation {
+            let result = upload.result!
+            log(.debug, "finishing upload of \(imageSaveOperation) with \(result)")
+            progress.completedUnitCount = 1
+            completion(result)
+        }
+        completionOp.addDependency(ops.last!)
+        OperationQueue.main.addOperation(completionOp)
+
+        return progress
+    }
 
     // blah blah error may be CocoaError.userCancelled (check if that's actually a type?) or ImgurUploader.Error or probably other things
     public enum Result<T> {

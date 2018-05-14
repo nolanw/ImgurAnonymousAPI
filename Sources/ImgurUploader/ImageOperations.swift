@@ -11,6 +11,12 @@ import Foundation
 import Photos
 
 internal final class SavePHAsset: AsynchronousOperation<URL> {
+    private let asset: PHAsset
+
+    init(_ asset: PHAsset) {
+        self.asset = asset
+    }
+
     override func execute() throws {
         throw CocoaError.error(.userCancelled)
     }
@@ -22,6 +28,12 @@ internal final class SavePHAsset: AsynchronousOperation<URL> {
 import UIKit
 
 internal final class SaveUIImage: AsynchronousOperation<URL> {
+    private let image: UIImage
+
+    init(_ image: UIImage) {
+        self.image = image
+    }
+
     override func execute() throws {
         throw CocoaError.error(.userCancelled)
     }
