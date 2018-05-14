@@ -126,17 +126,26 @@ extension ImgurUploader {
 
 extension ImgurUploader {
     private func upload(imageSaveOperation: Operation, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
-        let upload = UploadFormData()
-        let ops: [Operation] = [
-            MakeTempFolder(),
-            imageSaveOperation,
-            WriteMultipartFormData(),
-            upload,
-            DeleteTempFolder()]
+        let tempFolder = MakeTempFolder()
 
-        for (before, after) in zip(ops, ops.dropFirst()) {
-            after.addDependency(before)
-        }
+        imageSaveOperation.addDependency(tempFolder)
+
+        let resize = ResizeImage()
+        resize.addDependency(imageSaveOperation)
+        resize.addDependency(tempFolder)
+
+        let writeFormData = WriteMultipartFormData()
+        writeFormData.addDependency(imageSaveOperation)
+        writeFormData.addDependency(tempFolder)
+
+        let upload = UploadFormData()
+        upload.addDependency(writeFormData)
+
+        let deleteTempFolder = DeleteTempFolder()
+        deleteTempFolder.addDependency(tempFolder)
+        deleteTempFolder.addDependency(upload)
+
+        let ops = [tempFolder, imageSaveOperation, resize, writeFormData, upload, deleteTempFolder]
 
         log(.debug, "starting upload of \(imageSaveOperation)")
         queue.addOperations(ops, waitUntilFinished: false)
@@ -144,7 +153,7 @@ extension ImgurUploader {
         let progress = Progress(totalUnitCount: 1)
         progress.cancellationHandler = {
             log(.debug, "cancelling upload of \(imageSaveOperation)")
-            for op in ops {
+            for op in ops where !(op is DeleteTempFolder) {
                 op.cancel()
             }
         }

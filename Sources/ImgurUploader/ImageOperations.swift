@@ -6,8 +6,16 @@
 //  Copyright © 2018 Nolan Waite. All rights reserved.
 //
 
-#if canImport(Photos)
 import Foundation
+import ImageIO
+
+internal final class ResizeImage: AsynchronousOperation<URL> {
+    override func execute() throws {
+        throw CocoaError.error(.userCancelled)
+    }
+}
+
+#if canImport(Photos)
 import Photos
 
 internal final class SavePHAsset: AsynchronousOperation<URL> {
