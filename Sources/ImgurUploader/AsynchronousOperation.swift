@@ -18,7 +18,7 @@ internal class AsynchronousOperation<T>: Foundation.Operation {
         set {
             willChangeValue(for: \.state)
             queue.sync(flags: .barrier) {
-                log(.debug, "operation \(self) is now \(newValue)")
+                log(.debug, "operation \(self) is now \(newValue) with result \(result as Any)")
                 _state = newValue
             }
             didChangeValue(for: \.state)
@@ -78,16 +78,25 @@ internal class AsynchronousOperation<T>: Foundation.Operation {
 }
 
 extension AsynchronousOperation {
-    func firstDependency<T>(of operationType: T.Type) throws -> T {
-        if let op = dependencies.lazy.compactMap({ $0 as? T }).first {
-            return op
-        } else {
-            throw MissingDependency(dependentOperationType: T.self)
+    func firstDependencyValue<T>(ofType resultType: T.Type) throws -> T {
+        let candidates = dependencies.lazy
+            .compactMap { $0 as? AsynchronousOperation<T> }
+
+        for op in candidates.dropLast() {
+            if let value = op.result?.value {
+                return value
+            }
         }
+
+        guard let lastResult = candidates.last?.result else {
+            throw MissingDependency(dependentResultValueType: T.self)
+        }
+
+        return try lastResult.unwrap()
     }
 
     struct MissingDependency: Error {
-        let dependentOperationType: Any.Type
+        let dependentResultValueType: Any.Type
     }
 }
 

@@ -135,10 +135,14 @@ extension ImgurUploader {
         resize.addDependency(tempFolder)
 
         let writeFormData = WriteMultipartFormData()
-        writeFormData.addDependency(imageSaveOperation)
+        writeFormData.addDependency(resize)
         writeFormData.addDependency(tempFolder)
 
-        let upload = UploadFormData()
+        let upload = UploadImageAsFormData(urlSession: urlSession, request: {
+            var request = URLRequest(url: URL(string: "https://api.imgur.com/3/image")!)
+            request.httpMethod = "POST"
+            return request
+        }())
         upload.addDependency(writeFormData)
 
         let deleteTempFolder = DeleteTempFolder()
@@ -183,31 +187,57 @@ extension ImgurUploader {
                 return nil
             }
         }
-    }
 
-    // blah blah parsed HTTP response from Imgur
-    public struct UploadResponse {
-        public let id: String
-        public let link: URL
-        public let postLimit: PostLimit? // optional because if the info is missing or formatted unexpectedly it doesn’t mean the upload failed
-        public let rateLimit: RateLimit? // optional for same reason as above
+        internal func unwrap() throws -> T {
+            switch self {
+            case .success(let value):
+                return value
+            case .failure(let error):
+                throw error
+            }
+        }
     }
+}
+
+// blah blah parsed HTTP response from Imgur
+public struct UploadResponse {
+    public let id: String
+    public let link: URL
+    public let postLimit: PostLimit? // optional because if the info is missing or formatted unexpectedly it doesn’t mean the upload failed
+    public let rateLimit: RateLimit? // optional for same reason as above
 }
 
 internal typealias Result = ImgurUploader.Result
 
 // MARK: - Rate limiting
 
-extension ImgurUploader {
+// blah blah client vs. user rate limit etc.
+public struct RateLimit: Decodable {
+    public let clientAllocation: Int
+    public let clientRemaining: Int
+    // there’s no client reset date but it’s a "per day" thing (not sure what time zone)
+    public let userAllocation: Int
+    public let userRemaining: Int
+    public let userResetDate: Date
 
-    // blah blah upload responses include a POST limit, explain how that works (hourly? from IP address? check docs)
-    public struct PostLimit {
-        public let allocation: Int
-        public let remaining: Int
-        public let timeUntilReset: TimeInterval
+    private enum CodingKeys: String, CodingKey {
+        case clientAllocation = "ClientLimit"
+        case clientRemaining = "ClientRemaining"
+        case userAllocation = "UserLimit"
+        case userRemaining = "UserRemaining"
+        case userResetDate = "UserReset"
     }
+}
 
-    // does not seem to use credits (thankfully)
+// blah blah upload responses include a POST limit, explain how that works (hourly? from IP address? check docs)
+public struct PostLimit {
+    public let allocation: Int
+    public let remaining: Int
+    public let timeUntilReset: TimeInterval
+}
+
+extension ImgurUploader {
+// does not seem to use credits (thankfully)
     // does not include POST limits
     // returned progress supports cancellation
     // completion block called on main queue
@@ -236,27 +266,18 @@ extension ImgurUploader {
 
         return progress
     }
-
-    // blah blah client vs. user rate limit etc.
-    public struct RateLimit: Decodable {
-        public let clientAllocation: Int
-        public let clientRemaining: Int
-        // there’s no client reset date but it’s a "per day" thing (not sure what time zone)
-        public let userAllocation: Int
-        public let userRemaining: Int
-        public let userResetDate: Date
-
-        private enum CodingKeys: String, CodingKey {
-            case clientAllocation = "ClientLimit"
-            case clientRemaining = "ClientRemaining"
-            case userAllocation = "UserLimit"
-            case userRemaining = "UserRemaining"
-            case userResetDate = "UserReset"
-        }
-    }
 }
 
 // MARK: - Delete uploaded images
+
+// blah blah imgur says these follow a certain format but this struct doesn't try to enforce that format
+public struct DeleteHash: RawRepresentable {
+    public let rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
 
 extension ImgurUploader {
 
@@ -298,13 +319,5 @@ extension ImgurUploader {
         OperationQueue.main.addOperation(completionOp)
 
         return progress
-    }
-
-    public struct DeleteHash: RawRepresentable {
-        public let rawValue: String
-
-        public init(rawValue: String) {
-            self.rawValue = rawValue
-        }
     }
 }
