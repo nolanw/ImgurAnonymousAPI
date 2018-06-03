@@ -96,7 +96,10 @@ internal final class UploadImageAsFormData: AsynchronousOperation<UploadResponse
         let formDataFile = try firstDependencyValue(ofType: FormDataFile.self)
 
         var request = self.request
-        request.setValue("multipart/form-boundary; boundary=\(formDataFile.boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("multipart/form-data; boundary=\(formDataFile.boundary)", forHTTPHeaderField: "Content-Type")
+        if let byteSize = (try? formDataFile.url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize {
+            request.setValue("\(byteSize)", forHTTPHeaderField: "Content-Length")
+        }
         task = urlSession.uploadTask(with: request, fromFile: formDataFile.url) { data, response, error in
             if let error = error {
                 return self.finish(.failure(error))
