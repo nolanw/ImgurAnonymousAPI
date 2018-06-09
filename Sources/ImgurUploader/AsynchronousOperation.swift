@@ -9,20 +9,12 @@
 import Foundation
 
 internal class AsynchronousOperation<T>: Foundation.Operation {
-    private let queue = DispatchQueue(label: "com.nolanw.ImgurUploader.async-operation-state", attributes: .concurrent)
+    private let queue = DispatchQueue(label: "com.nolanw.ImgurUploader.async-operation-state")
     private(set) var result: Result<T>?
     private var _state: AsynchronousOperationState = .ready
 
     @objc private dynamic var state: AsynchronousOperationState {
-        get { return queue.sync { _state } }
-        set {
-            willChangeValue(for: \.state)
-            queue.sync(flags: .barrier) {
-                log(.debug, "operation \(self) is now \(newValue) with result \(result as Any)")
-                _state = newValue
-            }
-            didChangeValue(for: \.state)
-        }
+        return queue.sync { _state }
     }
 
     final override var isReady: Bool {
@@ -59,7 +51,7 @@ internal class AsynchronousOperation<T>: Foundation.Operation {
             return finish(.failure(CocoaError.error(.userCancelled)))
         }
 
-        state = .executing
+        update(state: .executing, result: nil)
         do {
             try execute()
         } catch {
@@ -72,8 +64,23 @@ internal class AsynchronousOperation<T>: Foundation.Operation {
     }
 
     final func finish(_ result: Result<T>) {
-        self.result = result
-        state = .finished
+        update(state: .finished, result: result)
+    }
+
+    private func update(state newState: AsynchronousOperationState, result newResult: Result<T>?) {
+        willChangeValue(for: \.state)
+
+        queue.sync {
+            guard _state != .finished else { return }
+
+            log(.debug, "operation \(self) is now \(newState) with result \(newResult as Any)")
+            _state = newState
+            if let newResult = newResult {
+                result = newResult
+            }
+        }
+
+        didChangeValue(for: \.state)
     }
 }
 

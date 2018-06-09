@@ -15,6 +15,15 @@ internal struct FormDataFile {
     let url: URL
 }
 
+internal enum WriteError: Error {
+    case couldNotReadImageFile
+    case couldNotReadPartOfImageFile
+    case failedWritingBottomData
+    case failedWritingImageToOutputFile
+    case failedWritingToOutputFile
+    case failedWritingTopData
+}
+
 internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile> {
     override func execute() throws {
         let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
@@ -22,7 +31,8 @@ internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile>
 
         let uti = CGImageSourceCreateWithURL(imageFile.url as CFURL, nil)
             .flatMap { CGImageSourceGetType($0) }
-        let mimeType = uti.flatMap { UTTypeCopyPreferredTagWithClass($0, kUTTagClassMIMEType)?.takeRetainedValue() as String? }
+        let mimeType = uti
+            .flatMap { UTTypeCopyPreferredTagWithClass($0, kUTTagClassMIMEType)?.takeRetainedValue() as String? }
             ?? "application/octet-stream"
 
         let requestBodyURL = tempFolder.url
@@ -43,26 +53,18 @@ internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile>
                     log(.debug, "done writing at \(requestBodyURL)")
                 } else {
                     log(.error, "could not create multipart/form-data request file at \(requestBodyURL)")
+                    return self.finish(.failure(WriteError.failedWritingToOutputFile))
                 }
         })
 
-        let start = [
-            "--\(boundary)",
-            "Content-Disposition: form-data; name=\"image\"; filename=\"image\"",
-            "Content-Type: \(mimeType)",
-            "\r\n"]
-            .joined(separator: "\r\n")
-            .data(using: .utf8)!
-        let topData = start.withUnsafeBytes { ptr in
-            return DispatchData(bytes: UnsafeRawBufferPointer(start: ptr, count: start.count))
-        }
-        log(.debug, "writing \(start) to \(requestBodyURL)")
+        let topData = makeTopData(boundary: boundary, mimeType: mimeType)
         output.write(offset: 0, data: topData, queue: queue, ioHandler: { done, data, error in
             if done {
                 if error == 0 {
                     log(.debug, "finished writing start")
                 } else {
                     log(.error, "couldn't write top data: error \(error)")
+                    return self.finish(.failure(WriteError.failedWritingTopData))
                 }
             }
         })
@@ -78,47 +80,51 @@ internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile>
                     log(.debug, "done reading at \(imageFile.url)")
                 } else {
                     log(.error, "couldn't open image file for copying: \(imageFile.url)")
+                    return self.finish(.failure(WriteError.couldNotReadImageFile))
                 }
         })
 
-        input.read(offset: 0, length: Int(bitPattern: SIZE_MAX), queue: queue, ioHandler: { done, data, error in
-            log(.debug, "read some input! done = \(done), data = \(data as Any), error = \(error)")
+        input.read(offset: 0, length: Int(bitPattern: SIZE_MAX), queue: queue, ioHandler: { readDone, readData, readError in
+            log(.debug, "read some image file! done = \(readDone), byte count = \(readData?.count as Any), error = \(readError)")
 
-            if error != 0 {
-                log(.error, "couldn't read some of image file at \(imageFile.url): \(error)")
-                input.close()
+            if readDone, readError != 0 {
+                log(.error, "couldn't read some of image file at \(imageFile.url): \(readError)")
                 output.close(flags: .stop)
-                return
+                return self.finish(.failure(WriteError.couldNotReadPartOfImageFile))
             }
 
-            if let data = data {
-                output.write(offset: 0, data: data, queue: queue, ioHandler: { done, data, error in
-                    if error == 0 {
-                        log(.debug, "wrote some of image file")
-                    } else {
-                        input.close(flags: .stop)
-                        log(.error, "couldn't write some of image file to \(requestBodyURL): \(error)")
+            if let data = readData {
+                output.write(offset: 0, data: data, queue: queue, ioHandler: { writeDone, writeData, writeError in
+                    if writeDone {
+                        if writeError == 0 {
+                            log(.debug, "wrote some of image file")
+                        } else {
+                            log(.error, "couldn't write some of image file to \(requestBodyURL): \(writeError)")
+                            input.close(flags: .stop)
+                            return self.finish(.failure(WriteError.failedWritingImageToOutputFile))
+                        }
                     }
                 })
             }
 
-            if done {
-                let end = "\r\n--\(boundary)--".data(using: .utf8)!
-                let bottomData = end.withUnsafeBytes { ptr in
-                    return DispatchData(bytes: UnsafeRawBufferPointer(start: ptr, count: end.count))
-                }
-                output.write(offset: 0, data: bottomData, queue: queue, ioHandler: { done, data, error in
-                    if error != 0 {
-                        log(.error, "couldn't write bottom data: error \(error)")
-                    }
-
-                    if done {
-                        output.close()
-                        self.finish(.success(FormDataFile(boundary: boundary, url: requestBodyURL)))
-                    }
-                })
+            if readDone {
+                writeBottom()
             }
         })
+
+        func writeBottom() {
+            let bottomData = makeBottomData(boundary: boundary)
+            output.write(offset: 0, data: bottomData, queue: queue, ioHandler: { done, data, error in
+                if done {
+                    if error == 0 {
+                        return self.finish(.success(FormDataFile(boundary: boundary, url: requestBodyURL)))
+                    } else {
+                        log(.error, "couldn't write bottom data: error \(error)")
+                        return self.finish(.failure(WriteError.failedWritingBottomData))
+                    }
+                }
+            })
+        }
     }
 }
 
@@ -128,6 +134,27 @@ private func makeBoundary() -> String {
 }
 
 private let boundaryDigits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+
+private func makeTopData(boundary: String, mimeType: String) -> DispatchData {
+    let top = [
+        "--\(boundary)",
+        "Content-Disposition: form-data; name=\"image\"; filename=\"image\"",
+        "Content-Type: \(mimeType)",
+        "\r\n",
+        ]
+        .joined(separator: "\r\n")
+        .data(using: .utf8)!
+    return top.withUnsafeBytes {
+        DispatchData(bytes: UnsafeRawBufferPointer(start: $0, count: top.count))
+    }
+}
+
+private func makeBottomData(boundary: String) -> DispatchData {
+    let end = "\r\n--\(boundary)--".data(using: .utf8)!
+    return end.withUnsafeBytes {
+        DispatchData(bytes: UnsafeRawBufferPointer(start: $0, count: end.count))
+    }
+}
 
 private extension Collection {
     var randomElement: Element {
