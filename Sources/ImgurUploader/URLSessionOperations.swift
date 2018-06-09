@@ -11,9 +11,22 @@ import Foundation
 internal struct MissingResponseData: Error {}
 
 public struct APIError: Decodable, Error {
-    let error: String
+    let error: Either<String, DetailedAPIError>
 
-    var localizedDescription: String { return error }
+    var localizedDescription: String {
+        switch error {
+        case .left(let string):
+            return string
+        case .right(let detail):
+            return detail.message
+        }
+    }
+}
+
+public struct DetailedAPIError: Decodable {
+    let code: Int
+    let message: String
+    let type: String
 }
 
 internal struct APIResponse<T: Decodable>: Decodable {
