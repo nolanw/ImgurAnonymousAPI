@@ -11,16 +11,29 @@ import Photos
 import UIKit
 
 final class ViewController: UIViewController {
-    private var clientID: String = ""
+    private var clientID: String = UserDefaults.standard.string(forKey: "Imgur client ID") ?? ""
     private var imagePickerInfo: ImgurUploader.UIImagePickerControllerInfo?
     private var uploader: ImgurUploader?
 
-    @IBOutlet private var controls: [UIControl]!
-    @IBOutlet private weak var imageButton: UIButton!
-    @IBOutlet private weak var resultsTextView: UITextView!
+    @IBOutlet private var clientIDTextField: UITextField?
+    @IBOutlet private var controls: [UIControl]?
+    @IBOutlet private var imageButton: UIButton?
+    @IBOutlet private var resultsTextView: UITextView?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        clientIDTextField?.text = clientID
+    }
 
     @IBAction func didChangeClientID(_ sender: UITextField) {
         clientID = sender.text ?? ""
+        if let id = sender.text, !id.isEmpty {
+            UserDefaults.standard.set(id, forKey: "Imgur client ID")
+        } else {
+            UserDefaults.standard.removeObject(forKey: "Imgur client ID")
+        }
+
         uploader = nil
     }
 
@@ -90,16 +103,16 @@ final class ViewController: UIViewController {
     private func endOperation<T>(_ result: ImgurUploader.Result<T>) {
         switch result {
         case .success(let value):
-            self.resultsTextView.text = "hooray!\n\(value)"
+            resultsTextView?.text = "hooray!\n\(value)"
         case .failure(let error):
-            self.resultsTextView.text = "boo!\n\(error)"
+            resultsTextView?.text = "boo!\n\(error)"
         }
 
         setIsEnabled(true)
     }
 
     private func setIsEnabled(_ isEnabled: Bool) {
-        for control in controls {
+        for control in controls ?? [] {
             control.isEnabled = isEnabled
         }
     }
@@ -160,8 +173,8 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
 
         let image = info[UIImagePickerControllerEditedImage] as? UIImage
             ?? info[UIImagePickerControllerOriginalImage] as? UIImage
-        imageButton.setImage(image, for: .normal)
-        imageButton.setTitle(image == nil ? "Image" : nil, for: .normal)
+        imageButton?.setImage(image, for: .normal)
+        imageButton?.setTitle(image == nil ? "Image" : nil, for: .normal)
 
         dismiss(animated: true)
     }
