@@ -12,7 +12,7 @@ internal struct TemporaryFolder {
     let url: URL
 }
 
-internal final class MakeTempFolder: AsynchronousOperation<TemporaryFolder> {
+internal final class MakeTemporaryFolder: AsynchronousOperation<TemporaryFolder> {
     override func execute() throws {
         let url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -24,7 +24,7 @@ internal final class MakeTempFolder: AsynchronousOperation<TemporaryFolder> {
     }
 }
 
-internal final class DeleteTempFolder: AsynchronousOperation<Void> {
+internal final class DeleteTemporaryFolder: AsynchronousOperation<Void> {
     override func execute() throws {
         do {
             let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)

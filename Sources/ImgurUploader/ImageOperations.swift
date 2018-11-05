@@ -15,14 +15,27 @@ internal struct ImageFile {
 
 internal enum ImageError: Error {
     case destinationCreationFailed
-    case indeterminateFileSize
+    case destinationFinalizationFailed
+    case indeterminateOriginalFileSize
+    case indeterminateThumbnailFileSize
     case missingCGImage
     case missingPhotoResource
     case sourceCreationFailed
+    case thumbnailCreationFailed
 }
 
-// Haven't tested whether they mean 10^6, 2^20, or something else so we'll pick the smaller of those.
-private let tenMegabytes = 10_000_000
+/**
+ The documented file size limit for uploaded non-animated images.
+ 
+ We have a couple of candidate sizes:
+ 
+    * 10 MB, per https://api.imgur.com/endpoints/image#image-upload
+    * 10 MB, per https://apidocs.imgur.com/#c85c9dfc-7487-4de2-9ecd-66f727cf3139
+    * 20 MB, per https://help.imgur.com/hc/en-us/articles/115000083326
+ 
+ As of 2018-11-04, an 18.7 MB file was rejected with "File is over the size limit", so I guess that rules out 20 MB. And a 10,018,523 byte file was similarly rejected, so 10^6 it is!
+ */
+private let imgurFileSizeLimit = 10_000_000
 
 internal final class ResizeImage: AsynchronousOperation<ImageFile> {
     override func execute() throws {
@@ -31,10 +44,10 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
         log(.debug, "someone wants to resize \(originalImage) in \(tempFolder)")
 
         guard let originalByteSize = try originalImage.url.resourceValues(forKeys: [.fileSizeKey]).fileSize else {
-            throw ImageError.indeterminateFileSize
+            throw ImageError.indeterminateOriginalFileSize
         }
-
-        if originalByteSize <= tenMegabytes {
+        
+        if originalByteSize <= imgurFileSizeLimit {
             log(.debug, "original image is within the file size limit so there's nothing to resize")
             return finish(.success(originalImage))
         } else {
@@ -44,42 +57,55 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
         guard let imageSource = CGImageSourceCreateWithURL(originalImage.url as CFURL, nil) else {
             throw ImageError.sourceCreationFailed
         }
+        
+        var maxPixelSize: Int
+        if
+            let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as NSDictionary?,
+            let width = properties[kCGImagePropertyPixelWidth] as? Int,
+            let height = properties[kCGImagePropertyPixelHeight] as? Int
+        {
+            maxPixelSize = max(width, height) / 2
+        } else {
+            maxPixelSize = 2048 // Gotta start somewhere.
+        }
 
         var resizedImageURL = tempFolder.url
             .appendingPathComponent("resized", isDirectory: false)
             .appendingPathExtension(originalImage.url.pathExtension)
-
-        // Is kCGImageSourceSubsampleFactor superior to kCGImageSourceThumbnailMaxPixelSize? No idea! Sounds good though so let's try it first. Probably worth testing someday.
-        for factor in [2, 4, 8] {
+        
+        while true {
             guard
                 let thumbnail = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [
                     kCGImageSourceCreateThumbnailFromImageAlways: true,
                     kCGImageSourceCreateThumbnailWithTransform: true,
-                    kCGImageSourceSubsampleFactor: factor] as NSDictionary),
-                let destination = CGImageDestinationCreateWithURL(resizedImageURL as CFURL, CGImageSourceGetType(imageSource) ?? kUTTypePNG, 1, nil)
-                else { continue }
+                    kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
+                    kCGImageSourceShouldCache: false] as NSDictionary),
+                let destination = CGImageDestinationCreateWithURL(resizedImageURL as CFURL, CGImageSourceGetType(imageSource) ?? kUTTypePNG, 1, nil) else
+            {
+                log(.error, "thumbnail creation failed")
+                throw ImageError.thumbnailCreationFailed
+            }
 
             CGImageDestinationAddImage(destination, thumbnail, nil)
-            guard CGImageDestinationFinalize(destination) else { break }
+            guard CGImageDestinationFinalize(destination) else {
+                log(.error, "thumbnail could not be saved")
+                throw ImageError.destinationFinalizationFailed
+            }
 
             resizedImageURL.removeCachedResourceValue(forKey: .fileSizeKey)
             guard
                 let resourceValues = try? resizedImageURL.resourceValues(forKeys: [.fileSizeKey]),
-                let byteSize = resourceValues.fileSize
-                else { break }
+                let byteSize = resourceValues.fileSize else
+            {
+                log(.error, "could not determine file size of generated thumbnail")
+                throw ImageError.indeterminateThumbnailFileSize
+            }
 
-            if byteSize <= tenMegabytes {
-                log(.debug, "scaled image by a factor of \(factor) is within the file size limit")
+            if byteSize <= imgurFileSizeLimit {
+                log(.debug, "scaled image down to \(maxPixelSize)px as its larger dimension, which gets it to \(byteSize) bytes, which is within the file size limit")
                 return finish(.success(ImageFile(url: resizedImageURL)))
-            } else if byteSize > originalByteSize {
-                log(.debug, "subsample factor is producing a larger image, this ain't working")
-                break
             }
         }
-
-        log(.error, "subsample failed to produce an image within the file size limit, so it's time do a plain ol' resize using kCGImageSourceThumbnailMaxPixelSize")
-
-        throw CocoaError.error(.userCancelled)
     }
 }
 

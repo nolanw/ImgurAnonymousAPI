@@ -8,6 +8,18 @@
 
 import Foundation
 
+/**
+ An abstract class for all operations in this project.
+ 
+ Subclasses must implement `execute()`. Implementations must be ready to run on any thread. An implementation of `execute()`.
+ 
+ Provides the following features:
+ 
+ * Always runs asynchronously.
+ * Has an associated result type.
+ * Can conveniently locate dependent operations with a particular result type.
+ * Error reporting via convenient `throw`.
+ */
 internal class AsynchronousOperation<T>: Foundation.Operation {
     private let queue = DispatchQueue(label: "com.nolanw.ImgurUploader.async-operation-state")
     private(set) var result: Result<T>?
@@ -36,8 +48,8 @@ internal class AsynchronousOperation<T>: Foundation.Operation {
     override class func keyPathsForValuesAffectingValue(forKey key: String) -> Set<String> {
         var keyPaths = super.keyPathsForValuesAffectingValue(forKey: key)
         switch key {
-        case "isExecuting", "isFinished", "isReady":
-            keyPaths.insert("state")
+        case #keyPath(isExecuting), #keyPath(isFinished), #keyPath(isReady):
+            keyPaths.insert(#keyPath(state))
         default:
             break
         }

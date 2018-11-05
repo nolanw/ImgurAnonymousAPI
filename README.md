@@ -7,7 +7,7 @@ This project is focused on taking an image in an iOS app and uploading it to Img
 * We accept the image types you're probably already using.
 * We make it easy to upload images directly from an image picker.
 * We cheerfully resize that gigantic image until it ducks below the Imgur file size limit.
-* We resize that gigantic without getting you terminated for eating all the device's memory.
+* We resize that gigantic image without getting you terminated for eating all the device's memory.
 
 ## Getting started
 
