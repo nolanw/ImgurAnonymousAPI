@@ -139,12 +139,21 @@ internal final class UploadImageAsFormData: AsynchronousOperation<UploadResponse
             }
 
             let httpResponse = response as? HTTPURLResponse
+            
+            // The headers dictionary is meant to handle its keys in a case-insensitive manner (much like HTTP), but the Swift bridging breaks this functionality, so we need to handle it ourselves. https://bugs.swift.org/browse/SR-2429
+            let headers: [String: Any] = {
+                let unknownCaseHeaders = httpResponse?.allHeaderFields as? [String: Any] ?? [:]
+                let downcased = unknownCaseHeaders.map { ($0.key.lowercased(), $0.value) }
+                
+                // Having multiple headers with the same name is allowed by the spec. The documentation for `allHeaderFields` doesn't explain how that situation is conveyed via the returned dictionary, and we're already dealing with a dictionary instance that does something special with its keys, so let's be safe and not assume the dictionary keys are already unique. Instead, we'll arbitrariy coalesce multiple headers into one of the given values.
+                return Dictionary(downcased, uniquingKeysWith: { $1 })
+            }()
+            
             self.finish(.success(UploadResponse(
                 id: responseData.id,
                 link: responseData.link,
-                postLimit: httpResponse.flatMap { PostLimit($0) },
-                rateLimit: httpResponse.flatMap { RateLimit($0) })))
-
+                postLimit: PostLimit(headers),
+                rateLimit: RateLimit(headers))))
         }
 
         log(.debug, "starting \(self) with url \(request.url as Any)")
@@ -158,16 +167,16 @@ internal final class UploadImageAsFormData: AsynchronousOperation<UploadResponse
 }
 
 private extension PostLimit {
-    init?(_ response: HTTPURLResponse) {
-        let headers = response.allHeaderFields
+    init?(_ headers: [String: Any]) {
         guard
-            let rawAllocation = headers["X-Post-Rate-Limit-Limit"] as? String,
+            let rawAllocation = headers["x-post-rate-limit-limit"] as? String,
             let allocation = Int(rawAllocation),
-            let rawRemaining = headers["X-Post-Rate-Limit-Remaining"] as? String,
+            let rawRemaining = headers["x-post-rate-limit-remaining"] as? String,
             let remaining = Int(rawRemaining),
-            let rawTimeUntilReset = headers["X-Post-Rate-Limit-Reset"] as? String,
+            let rawTimeUntilReset = headers["x-post-rate-limit-reset"] as? String,
             let timeUntilReset = TimeInterval(rawTimeUntilReset)
             else { return nil }
+        
         self.allocation = allocation
         self.remaining = remaining
         self.timeUntilReset = timeUntilReset
@@ -175,20 +184,20 @@ private extension PostLimit {
 }
 
 private extension RateLimit {
-    init?(_ response: HTTPURLResponse) {
-        let headers = response.allHeaderFields
+    init?(_ headers: [String: Any]) {
         guard
-            let rawClientAllocation = headers["X-RateLimit-ClientLimit"] as? String,
+            let rawClientAllocation = headers["x-ratelimit-clientlimit"] as? String,
             let clientAllocation = Int(rawClientAllocation),
-            let rawClientRemaining = headers["X-RateLimit-ClientRemaining"] as? String,
+            let rawClientRemaining = headers["x-ratelimit-clientremaining"] as? String,
             let clientRemaining = Int(rawClientRemaining),
-            let rawUserAllocation = headers["X-RateLimit-UserLimit"] as? String,
+            let rawUserAllocation = headers["x-ratelimit-userlimit"] as? String,
             let userAllocation = Int(rawUserAllocation),
-            let rawUserRemaining = headers["X-RateLimit-UserRemaining"] as? String,
+            let rawUserRemaining = headers["x-ratelimit-userremaining"] as? String,
             let userRemaining = Int(rawUserRemaining),
-            let rawUserResetTimeIntervalSince1970 = headers["X-RateLimit-UserReset"] as? String,
+            let rawUserResetTimeIntervalSince1970 = headers["x-ratelimit-userreset"] as? String,
             let userResetTimeIntervalSince1970 = TimeInterval(rawUserResetTimeIntervalSince1970)
             else { return nil }
+        
         self.clientAllocation = clientAllocation
         self.clientRemaining = clientRemaining
         self.userAllocation = userAllocation
