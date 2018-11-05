@@ -83,12 +83,12 @@ extension ImgurUploader {
     // returned progress supports cancellation
     // completion block called on main queue
     @discardableResult
-    public func upload(_ info: UIImagePickerControllerInfo, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
+    public func upload(_ info: [UIImagePickerController.InfoKey: Any], completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
 
         var asset: PHAsset? {
-            if #available(iOS 11.0, *), let asset = info[UIImagePickerControllerPHAsset] as? PHAsset {
+            if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
                 return asset
-            } else if let assetURL = info[UIImagePickerControllerReferenceURL] as? URL {
+            } else if let assetURL = info[.referenceURL] as? URL {
                 return PHAsset.fetchAssets(withALAssetURLs: [assetURL], options: nil).firstObject
             } else {
                 return nil
@@ -96,8 +96,8 @@ extension ImgurUploader {
         }
 
         var image: UIImage? {
-            return info[UIImagePickerControllerEditedImage] as? UIImage
-                ?? info[UIImagePickerControllerOriginalImage] as? UIImage
+            return info[.editedImage] as? UIImage
+                ?? info[.originalImage] as? UIImage
         }
 
         if let asset = asset {
@@ -116,9 +116,6 @@ extension ImgurUploader {
             return progress
         }
     }
-
-    // mention UIImagePickerControllerDelegate etc.?
-    public typealias UIImagePickerControllerInfo = [String: Any]
 }
 #endif
 

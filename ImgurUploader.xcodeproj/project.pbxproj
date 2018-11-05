@@ -320,6 +320,7 @@
 				TargetAttributes = {
 					1CF0A692209FC612004C26EA = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1010;
 					};
 					1CF0A6A5209FC6A3004C26EA = {
 						CreatedOnToolsVersion = 9.3;
@@ -329,6 +330,7 @@
 					};
 					1CF0A6D820A8E27E004C26EA = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 1010;
 					};
 				};
 			};
@@ -602,6 +604,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -624,6 +627,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -706,7 +710,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader.iOSTestApp;
 				PRODUCT_MODULE_NAME = iOSTestApp;
 				PRODUCT_NAME = ImgurUploader;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -726,7 +730,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader.iOSTestApp;
 				PRODUCT_MODULE_NAME = iOSTestApp;
 				PRODUCT_NAME = ImgurUploader;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

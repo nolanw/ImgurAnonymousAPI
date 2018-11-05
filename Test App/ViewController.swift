@@ -12,7 +12,7 @@ import UIKit
 
 final class ViewController: UIViewController {
     private var clientID: String = UserDefaults.standard.string(forKey: "Imgur client ID") ?? ""
-    private var imagePickerInfo: ImgurUploader.UIImagePickerControllerInfo?
+    private var imagePickerInfo: [UIImagePickerController.InfoKey: Any]?
     private var uploader: ImgurUploader?
 
     @IBOutlet private var clientIDTextField: UITextField?
@@ -137,7 +137,7 @@ final class ViewController: UIViewController {
         return uploader
     }
 
-    private func obtainImagePickerInfo() throws -> ImgurUploader.UIImagePickerControllerInfo {
+    private func obtainImagePickerInfo() throws -> [UIImagePickerController.InfoKey: Any] {
         if let info = imagePickerInfo {
             return info
         } else {
@@ -146,7 +146,7 @@ final class ViewController: UIViewController {
     }
 
     private func obtainPHAsset() throws -> PHAsset {
-        if #available(iOS 11.0, *), let asset = imagePickerInfo?[UIImagePickerControllerPHAsset] as? PHAsset {
+        if #available(iOS 11.0, *), let asset = imagePickerInfo?[.phAsset] as? PHAsset {
             return asset
         } else {
             throw MissingImage()
@@ -154,9 +154,9 @@ final class ViewController: UIViewController {
     }
 
     private func obtainUIImage() throws -> UIImage {
-        if let image = imagePickerInfo?[UIImagePickerControllerEditedImage] as? UIImage {
+        if let image = imagePickerInfo?[.editedImage] as? UIImage {
             return image
-        } else if let image = imagePickerInfo?[UIImagePickerControllerOriginalImage] as? UIImage {
+        } else if let image = imagePickerInfo?[.originalImage] as? UIImage {
             return image
         } else {
             throw MissingImage()
@@ -168,11 +168,12 @@ struct MissingClientID: Error {}
 struct MissingImage: Error {}
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+
         imagePickerInfo = info
 
-        let image = info[UIImagePickerControllerEditedImage] as? UIImage
-            ?? info[UIImagePickerControllerOriginalImage] as? UIImage
+        let image = info[.editedImage] as? UIImage
+            ?? info[.originalImage] as? UIImage
         imageButton?.setImage(image, for: .normal)
         imageButton?.setTitle(image == nil ? "Image" : nil, for: .normal)
 

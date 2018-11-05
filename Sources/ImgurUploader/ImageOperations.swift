@@ -21,7 +21,7 @@ internal enum ImageError: Error {
     case sourceCreationFailed
 }
 
-// Haven't tested whether they mean 10^6, 2^20, or something else so we'll pick the smallest.
+// Haven't tested whether they mean 10^6, 2^20, or something else so we'll pick the smaller of those.
 private let tenMegabytes = 10_000_000
 
 internal final class ResizeImage: AsynchronousOperation<ImageFile> {
@@ -174,7 +174,7 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
     }
 }
 
-private extension UIImageOrientation {
+private extension UIImage.Orientation {
     var cgOrientation: CGImagePropertyOrientation {
         switch self {
         case .up:
