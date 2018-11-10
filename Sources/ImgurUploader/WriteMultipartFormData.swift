@@ -18,10 +18,7 @@ internal struct FormDataFile {
 internal enum WriteError: Error {
     case couldNotReadImageFile
     case couldNotReadPartOfImageFile
-    case failedWritingBottomData
-    case failedWritingImageToOutputFile
-    case failedWritingToOutputFile
-    case failedWritingTopData
+    case failedWritingData(underlyingError: Error)
 }
 
 internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile> {
@@ -40,96 +37,24 @@ internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile>
             .appendingPathExtension("dat")
 
         let boundary = makeBoundary()
-
-        let queue = DispatchQueue(label: "ImgurUploader write multipart/form-data")
-        let output = DispatchIO(
-            __type: DispatchIO.StreamType.stream.rawValue,
-            path: requestBodyURL.path,
-            oflag: O_CREAT | O_WRONLY,
-            mode: S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH,
-            queue: queue,
-            handler: { error in
-                if error == 0 {
-                    log(.debug, "done writing at \(requestBodyURL)")
-                } else {
-                    log(.error, "could not create multipart/form-data request file at \(requestBodyURL)")
-                    return self.finish(.failure(WriteError.failedWritingToOutputFile))
-                }
-        })
-
-        let topData = makeTopData(boundary: boundary, mimeType: mimeType)
-        output.write(offset: 0, data: topData, queue: queue, ioHandler: { done, data, error in
-            if done {
-                if error == 0 {
-                    log(.debug, "finished writing start")
-                } else {
-                    log(.error, "couldn't write top data: error \(error)")
-                    return self.finish(.failure(WriteError.failedWritingTopData))
-                }
+        
+        let pieces: [DataPiece] = [
+            .inMemory({ makeTopData(boundary: boundary, mimeType: mimeType) }),
+            .fromFile(imageFile.url),
+            .inMemory({ makeBottomData(boundary: boundary) })]
+        
+        writeConcatenatedPieces(pieces, to: requestBodyURL, completion: { error in
+            if let error = error {
+                self.finish(.failure(WriteError.failedWritingData(underlyingError: error)))
+            } else {
+                self.finish(.success(FormDataFile(boundary: boundary, url: requestBodyURL)))
             }
         })
-
-        let input = DispatchIO(
-            __type: DispatchIO.StreamType.stream.rawValue,
-            path: imageFile.url.path,
-            oflag: O_RDONLY,
-            mode: 0,
-            queue: queue,
-            handler: { error in
-                if error == 0 {
-                    log(.debug, "done reading at \(imageFile.url)")
-                } else {
-                    log(.error, "couldn't open image file for copying: \(imageFile.url)")
-                    return self.finish(.failure(WriteError.couldNotReadImageFile))
-                }
-        })
-
-        input.read(offset: 0, length: Int(bitPattern: SIZE_MAX), queue: queue, ioHandler: { readDone, readData, readError in
-            log(.debug, "read some image file! done = \(readDone), byte count = \(readData?.count as Any), error = \(readError)")
-
-            if readDone, readError != 0 {
-                log(.error, "couldn't read some of image file at \(imageFile.url): \(readError)")
-                output.close(flags: .stop)
-                return self.finish(.failure(WriteError.couldNotReadPartOfImageFile))
-            }
-
-            if let data = readData {
-                output.write(offset: 0, data: data, queue: queue, ioHandler: { writeDone, writeData, writeError in
-                    if writeDone {
-                        if writeError == 0 {
-                            log(.debug, "wrote some of image file")
-                        } else {
-                            log(.error, "couldn't write some of image file to \(requestBodyURL): \(writeError)")
-                            input.close(flags: .stop)
-                            return self.finish(.failure(WriteError.failedWritingImageToOutputFile))
-                        }
-                    }
-                })
-            }
-
-            if readDone {
-                writeBottom()
-            }
-        })
-
-        func writeBottom() {
-            let bottomData = makeBottomData(boundary: boundary)
-            output.write(offset: 0, data: bottomData, queue: queue, ioHandler: { done, data, error in
-                if done {
-                    if error == 0 {
-                        return self.finish(.success(FormDataFile(boundary: boundary, url: requestBodyURL)))
-                    } else {
-                        log(.error, "couldn't write bottom data: error \(error)")
-                        return self.finish(.failure(WriteError.failedWritingBottomData))
-                    }
-                }
-            })
-        }
     }
 }
 
 private func makeBoundary() -> String {
-    let randos = (0..<16).map { _ in return boundaryDigits.randomElement }
+    let randos = (0..<16).compactMap { _ in return boundaryDigits.randomElement() }
     return String(randos)
 }
 
@@ -156,8 +81,125 @@ private func makeBottomData(boundary: String) -> DispatchData {
     }
 }
 
-private extension Collection {
-    var randomElement: Element {
-        return self[index(startIndex, offsetBy: Int(arc4random_uniform(UInt32(count))))]
+/// - Seealso: `writeConcatenatedPieces(_:to:completion:)`
+private enum DataPiece {
+    case fromFile(URL)
+    case inMemory(() -> DispatchData)
+}
+
+/**
+ Efficiently concatenates data from multiple sources (files and/or memory) into one destination file.
+ 
+ Specifically, this function stays efficient by:
+ 
+ - Loading file pieces in chunks to keep memory use constant and low.
+ - Requesting in-memory pieces on-demand.
+ 
+ - Parameter completion: A closure that is called from an arbitrary queue. It is passed `nil` on success, or an instance of `WriteConcatenatedPiecesError` on failure.
+ */
+private func writeConcatenatedPieces(_ pieces: [DataPiece], to destination: URL, completion: @escaping (Error?) -> Void) {
+    precondition(destination.isFileURL, "can only write to file URLs")
+    
+    /* This function is difficult to read because of all the callbacks. Here's the general approach:
+     
+     1. Open a DispatchIO channel for the destination file.
+     2. Write each piece to that channel in turn.
+         - If there is an error during this step, either writing to the channel or reading from a file piece, then `completion` is called immediately.
+     3. When all pieces are written, close the channel.
+     4. When the channel closes successfully, call `completion`.
+     */
+    
+    let queue = DispatchQueue(label: "Write concatenated data pieces")
+    
+    // We only want to call the completion handler once, so let's wrap it in an Optional and clear it when we call it. We only call it from the queue created above, so I'm not worried about synchronization here.
+    var completionCalledOnce = Optional.some(completion)
+    let completion: (Error?) -> Void = {
+        completionCalledOnce?($0)
+        completionCalledOnce = nil
     }
+    
+    let output = DispatchIO(
+        __type: DispatchIO.StreamType.stream.rawValue,
+        path: destination.path,
+        oflag: O_CREAT | O_WRONLY,
+        mode: S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH,
+        queue: queue,
+        handler: { error in
+            if error == 0 {
+                completion(nil)
+            } else {
+                completion(WriteConcatenatedPiecesError.failedWritingToDestination)
+            }
+    })
+    
+    var pieceIterator = pieces.enumerated().makeIterator()
+    
+    func writeNextPiece() {
+        switch pieceIterator.next() {
+        case let (i, .fromFile(source))?:
+            let input = DispatchIO(
+                __type: DispatchIO.StreamType.stream.rawValue,
+                path: source.path,
+                oflag: O_RDONLY,
+                mode: 0,
+                queue: queue,
+                handler: { error in
+                    if error == 0 {
+                        queue.async { writeNextPiece() }
+                    } else {
+                        output.close(flags: .stop)
+                        completion(WriteConcatenatedPiecesError.failedWritingPiece(index: i, dispatchErrorCode: error))
+                    }
+            })
+            
+            // This `Int` initializer seems to be the only way to pass `SIZE_MAX` in to this method, which is how you tell DispatchIO you want to read the entire file. It works fine, but it looks weird.
+            input.read(offset: 0, length: Int(bitPattern: SIZE_MAX), queue: queue, ioHandler: { readDone, readData, readError in
+                if readDone {
+                    if readError == 0 {
+                        input.close()
+                        return
+                    } else {
+                        output.close(flags: .stop)
+                        return completion(WriteConcatenatedPiecesError.failedReadingPiece(index: i, dispatchErrorCode: readError))
+                    }
+                }
+                
+                if let data = readData {
+                    output.write(offset: 0, data: data, queue: queue, ioHandler: { writeDone, writeData, writeError in
+                        if writeError != 0 {
+                            input.close(flags: .stop)
+                            output.close(flags: .stop)
+                            completion(WriteConcatenatedPiecesError.failedWritingPiece(index: i, dispatchErrorCode: writeError))
+                        }
+                    })
+                }
+            })
+            
+        case let (i, .inMemory(data))?:
+            output.write(offset: 0, data: data(), queue: queue) { done, data, error in
+                guard done else {
+                    // Just a progress report.
+                    return
+                }
+                
+                if error == 0 {
+                    writeNextPiece()
+                } else {
+                    output.close(flags: .stop)
+                    completion(WriteConcatenatedPiecesError.failedWritingPiece(index: i, dispatchErrorCode: error))
+                }
+            }
+            
+        case nil:
+            output.close()
+        }
+    }
+    
+    queue.async { writeNextPiece() }
+}
+
+internal enum WriteConcatenatedPiecesError: Error {
+    case failedReadingPiece(index: Int, dispatchErrorCode: Int32)
+    case failedWritingToDestination
+    case failedWritingPiece(index: Int, dispatchErrorCode: Int32)
 }
