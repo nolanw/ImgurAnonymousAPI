@@ -17,6 +17,7 @@ public final class ImgurUploader {
         }())
     }
 
+    // example with how to set this so you can dump logs somewhere
     public static var logger: ((_ level: LogLevel, _ message: () -> String) -> Void)?
 
     public enum Error: Swift.Error {
@@ -59,6 +60,7 @@ extension ImgurUploader {
     // uses rate limit credits
     // returned progress supports cancellation
     // completion block called on main queue
+    // this will trigger "can access photos?" prompt (or crash if missing Info.plist key NSPhotoLibraryUsageDescription)
     @discardableResult
     public func upload(_ asset: PHAsset, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
         return upload(imageSaveOperation: SavePHAsset(asset), completion: completion)
@@ -82,10 +84,17 @@ extension ImgurUploader {
 
     // returned progress supports cancellation
     // completion block called on main queue
+    // if user has allowed photo library access, image data is obtained therefrom; but this method will never result in the user being asked to authorize photo library access. nor will this method crash if your Info.plist has no value for "NSPhotoLibraryUsageDescription"
+    // note that as of iOS 11 (?) you can use an image picker, and this method to upload to imgur, without bothering with "NSPhotoLibraryUsageDescription" or photo library authorization
     @discardableResult
     public func upload(_ info: [UIImagePickerController.InfoKey: Any], completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
 
         var asset: PHAsset? {
+            guard SavePHAsset.hasRequiredPhotoLibraryAuthorization else {
+                log(.debug, "not using photo library to obtain image data as the user has not authorized photo library use")
+                return nil
+            }
+            
             if #available(iOS 11.0, *), let asset = info[.phAsset] as? PHAsset {
                 return asset
             } else if let assetURL = info[.referenceURL] as? URL {

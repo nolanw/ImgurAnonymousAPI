@@ -113,6 +113,22 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
 import Photos
 
 internal final class SavePHAsset: AsynchronousOperation<ImageFile> {
+    
+    static var hasRequiredPhotoLibraryAuthorization: Bool {
+        
+        // "Apps linked on or after iOS 10 will crash if [the NSPhotoLibraryUsageDescription] key is not present."
+        if #available(iOS 10.0, *), Bundle.main.infoDictionary?["NSPhotoLibraryUsageDescription"] == nil {
+            return false
+        }
+        
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .denied, .notDetermined, .restricted:
+            return false
+        case .authorized:
+            return true
+        }
+    }
+    
     private let asset: PHAsset
 
     init(_ asset: PHAsset) {
@@ -180,11 +196,9 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
         }
 
         CGImageDestinationAddImage(destination, cgImage, {
-            var options: [AnyHashable: Any] = [:]
-
-            options[kCGImagePropertyHasAlpha] = true
-
-            options[kCGImagePropertyOrientation] = image.imageOrientation.cgOrientation.rawValue
+            var options: [AnyHashable: Any] = [
+                kCGImagePropertyHasAlpha: true,
+                kCGImagePropertyOrientation: image.imageOrientation.cgOrientation.rawValue]
 
             if #available(iOS 9.3, *) {
                 options[kCGImageDestinationOptimizeColorForSharing] = true
