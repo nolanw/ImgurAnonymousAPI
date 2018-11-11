@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="34s-l8-5Iz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="34s-l8-5Iz">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -39,7 +38,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EGU-9c-5zG" userLabel="Content View">
-                                        <rect key="frame" x="16" y="0.0" width="343" height="292"/>
+                                        <rect key="frame" x="16" y="0.0" width="343" height="352.5"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="FqN-pg-ezM">
                                                 <rect key="frame" x="0.0" y="16" width="343" height="44.5"/>
@@ -50,7 +49,7 @@
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MrE-BO-aQ8">
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Retrieve from api.imgur.com" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MrE-BO-aQ8">
                                                         <rect key="frame" x="0.0" y="14.5" width="343" height="30"/>
                                                         <nil key="textColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -77,15 +76,15 @@
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iKS-G4-cCn">
+                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="iKS-G4-cCn">
                                                         <rect key="frame" x="0.0" y="14.5" width="343" height="90"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vuv-th-KKq">
-                                                                <rect key="frame" x="0.0" y="0.0" width="255" height="90"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="247" height="90"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="90" id="6wT-Wn-SIe"/>
                                                                 </constraints>
-                                                                <state key="normal" title="Image"/>
+                                                                <state key="normal" title="Choose Image"/>
                                                                 <connections>
                                                                     <action selector="didTapImage:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="XHt-k3-nU9"/>
                                                                 </connections>
@@ -120,8 +119,26 @@
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="2Sa-3x-s4W">
+                                                <rect key="frame" x="0.0" y="243" width="343" height="44.5"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="View" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Jl-mV-wWk">
+                                                        <rect key="frame" x="0.0" y="0.0" width="343" height="14.5"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c9m-C3-M7u">
+                                                        <rect key="frame" x="0.0" y="14.5" width="343" height="30"/>
+                                                        <state key="normal" title="Show Upload"/>
+                                                        <connections>
+                                                            <action selector="didTapShowUpload:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="Hgq-8Y-KQ2"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zcT-wt-0qp">
-                                                <rect key="frame" x="0.0" y="243" width="343" height="33"/>
+                                                <rect key="frame" x="0.0" y="303.5" width="343" height="33"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <color key="textColor" red="0.37055522200000002" green="0.37056469920000001" blue="0.37055957319999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -135,7 +152,8 @@
                                             <constraint firstItem="zcT-wt-0qp" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="EE5-2D-wUR"/>
                                             <constraint firstAttribute="trailing" secondItem="zbb-zW-XCb" secondAttribute="trailing" id="F3w-Qp-P7h"/>
                                             <constraint firstItem="FqN-pg-ezM" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="LL6-MR-riY"/>
-                                            <constraint firstItem="zcT-wt-0qp" firstAttribute="top" secondItem="zbb-zW-XCb" secondAttribute="bottom" constant="16" id="Qas-o9-orB"/>
+                                            <constraint firstAttribute="trailing" secondItem="2Sa-3x-s4W" secondAttribute="trailing" id="PFJ-eC-3Sl"/>
+                                            <constraint firstItem="2Sa-3x-s4W" firstAttribute="top" secondItem="zbb-zW-XCb" secondAttribute="bottom" constant="16" id="PMy-y1-nUr"/>
                                             <constraint firstItem="FqN-pg-ezM" firstAttribute="top" secondItem="EGU-9c-5zG" secondAttribute="top" constant="16" id="b4O-Ub-QzN"/>
                                             <constraint firstAttribute="trailing" secondItem="c0m-e4-v2X" secondAttribute="trailing" id="fkD-eO-rlG"/>
                                             <constraint firstItem="zbb-zW-XCb" firstAttribute="top" secondItem="c0m-e4-v2X" secondAttribute="bottom" constant="16" id="h1n-it-FFN"/>
@@ -143,6 +161,8 @@
                                             <constraint firstAttribute="bottom" secondItem="zcT-wt-0qp" secondAttribute="bottom" constant="16" id="hjA-3p-uEr"/>
                                             <constraint firstItem="c0m-e4-v2X" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="kg4-NJ-rat"/>
                                             <constraint firstItem="zbb-zW-XCb" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="tIg-Vs-c7o"/>
+                                            <constraint firstItem="2Sa-3x-s4W" firstAttribute="leading" secondItem="EGU-9c-5zG" secondAttribute="leading" id="wBr-l4-CGq"/>
+                                            <constraint firstItem="zcT-wt-0qp" firstAttribute="top" secondItem="2Sa-3x-s4W" secondAttribute="bottom" constant="16" id="xFw-Tm-cNn"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -167,15 +187,14 @@
                     </view>
                     <navigationItem key="navigationItem" id="uLU-2k-eUs"/>
                     <connections>
+                        <outlet property="checkRateLimitButton" destination="c0m-e4-v2X" id="WZe-gc-3k6"/>
                         <outlet property="clientIDTextField" destination="MrE-BO-aQ8" id="EQe-FI-Ruu"/>
                         <outlet property="imageButton" destination="Vuv-th-KKq" id="WcM-tl-FsM"/>
                         <outlet property="resultsTextView" destination="zcT-wt-0qp" id="4TA-rM-DXA"/>
-                        <outletCollection property="controls" destination="MrE-BO-aQ8" collectionClass="NSMutableArray" id="okk-XY-TsE"/>
-                        <outletCollection property="controls" destination="c0m-e4-v2X" collectionClass="NSMutableArray" id="fkW-OX-q7b"/>
-                        <outletCollection property="controls" destination="Vuv-th-KKq" collectionClass="NSMutableArray" id="pEa-Ju-WJA"/>
-                        <outletCollection property="controls" destination="F0r-vK-bCc" collectionClass="NSMutableArray" id="EUW-r8-yqR"/>
-                        <outletCollection property="controls" destination="u1d-AJ-L9m" collectionClass="NSMutableArray" id="kVL-E1-VUB"/>
-                        <outletCollection property="controls" destination="TFH-kw-Nvy" collectionClass="NSMutableArray" id="vmj-W1-KSp"/>
+                        <outlet property="showUploadButton" destination="c9m-C3-M7u" id="Obh-DK-gfY"/>
+                        <outlet property="uploadAsImagePickerInfoButton" destination="TFH-kw-Nvy" id="ERx-mn-twl"/>
+                        <outlet property="uploadAsPHAssetButton" destination="F0r-vK-bCc" id="JcY-Or-NjN"/>
+                        <outlet property="uploadAsUIImageButton" destination="u1d-AJ-L9m" id="MGm-ac-Nwl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

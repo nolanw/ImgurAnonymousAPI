@@ -8,96 +8,144 @@
 
 import ImgurUploader
 import Photos
+import SafariServices
 import UIKit
 
 final class ViewController: UIViewController {
-    private var clientID: String = UserDefaults.standard.string(forKey: "Imgur client ID") ?? ""
+    
+    private var clientID: String = UserDefaults.standard.imgurClientID ?? ""
     private var imagePickerInfo: [UIImagePickerController.InfoKey: Any]?
+    private var link: URL?
+    private var progress: Progress?
     private var uploader: ImgurUploader?
 
+    @IBOutlet private var checkRateLimitButton: UIButton?
     @IBOutlet private var clientIDTextField: UITextField?
-    @IBOutlet private var controls: [UIControl]?
     @IBOutlet private var imageButton: UIButton?
     @IBOutlet private var resultsTextView: UITextView?
-
+    @IBOutlet private var showUploadButton: UIButton?
+    @IBOutlet private var uploadAsImagePickerInfoButton: UIButton?
+    @IBOutlet private var uploadAsPHAssetButton: UIButton?
+    @IBOutlet private var uploadAsUIImageButton: UIButton?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         clientIDTextField?.text = clientID
+        update()
+    }
+    
+    private func update() {
+        let hasClientID = clientID != ""
+        let uploadInProgress = progress != nil && progress?.isFinished == false
+        
+        checkRateLimitButton?.isEnabled = hasClientID && !uploadInProgress
+        
+        imageButton?.isEnabled = !uploadInProgress
+        let image = imagePickerInfo?[.editedImage] as? UIImage
+            ?? imagePickerInfo?[.originalImage] as? UIImage
+        imageButton?.setBackgroundImage(image, for: .normal)
+        imageButton?.setTitle(image == nil ? "Choose Image" : nil, for: .normal)
+        
+        for button in [uploadAsImagePickerInfoButton, uploadAsPHAssetButton, uploadAsUIImageButton] {
+            button?.isEnabled = hasClientID && imagePickerInfo != nil && !uploadInProgress
+        }
+        
+        showUploadButton?.isEnabled = link != nil && !uploadInProgress
     }
 
-    @IBAction func didChangeClientID(_ sender: UITextField) {
+    @IBAction private func didChangeClientID(_ sender: UITextField) {
         clientID = sender.text ?? ""
-        if let id = sender.text, !id.isEmpty {
-            UserDefaults.standard.set(id, forKey: "Imgur client ID")
-        } else {
-            UserDefaults.standard.removeObject(forKey: "Imgur client ID")
-        }
-
+        UserDefaults.standard.imgurClientID = clientID
         uploader = nil
     }
 
-    @IBAction func didTapCheckRateLimits(_ sender: Any) {
+    @IBAction private func didTapCheckRateLimits(_ sender: Any) {
         do {
             let uploader = try obtainUploader()
-            beginOperation()
-            uploader.checkRateLimitStatus {
-                self.endOperation($0)
+            beginOperation {
+                uploader.checkRateLimitStatus {
+                    self.endOperation($0)
+                }
             }
         } catch {
             alert(error)
         }
     }
 
-    @IBAction func didTapImage(_ sender: Any) {
+    @IBAction private func didTapImage(_ sender: Any) {
         let picker = UIImagePickerController()
         picker.delegate = self
         present(picker, animated: true)
     }
 
-    @IBAction func didTapUploadAsPHAsset(_ sender: Any) {
+    @IBAction private func didTapShowUpload(_ sender: Any) {
+        guard let link = link else {
+            return alert(MissingLink())
+        }
+        
+        let safari = SFSafariViewController(url: link)
+        present(safari, animated: true)
+    }
+    
+    @IBAction private func didTapUploadAsPHAsset(_ sender: Any) {
         do {
             let uploader = try obtainUploader()
             let info = try obtainPHAsset()
-            beginOperation()
-            uploader.upload(info) {
-                self.endOperation($0)
+            beginOperation {
+                uploader.upload(info) {
+                    self.endOperation($0)
+                }
             }
         } catch {
             alert(error)
         }
     }
 
-    @IBAction func didTapUploadAsUIImage(_ sender: Any) {
+    @IBAction private func didTapUploadAsUIImage(_ sender: Any) {
         do {
             let uploader = try obtainUploader()
             let info = try obtainUIImage()
-            beginOperation()
-            uploader.upload(info) {
-                self.endOperation($0)
+            beginOperation {
+                uploader.upload(info) {
+                    self.endOperation($0)
+                }
             }
         } catch {
             alert(error)
         }
     }
 
-    @IBAction func didTapUploadAsWhatever(_ sender: Any) {
+    @IBAction private func didTapUploadAsWhatever(_ sender: Any) {
         do {
             let uploader = try obtainUploader()
             let info = try obtainImagePickerInfo()
-            beginOperation()
-            uploader.upload(info) {
-                self.endOperation($0)
+            beginOperation {
+                uploader.upload(info) {
+                    self.endOperation($0)
+                }
             }
         } catch {
             alert(error)
         }
     }
 
-    private func beginOperation() {
+    private func beginOperation(_ starter: () -> Progress) {
         view.endEditing(true)
-
-        setIsEnabled(false)
+        progress = starter()
+        update()
+    }
+    
+    private func endOperation(_ result: ImgurUploader.Result<UploadResponse>) {
+        switch result {
+        case .success(let value):
+            resultsTextView?.text = "hooray!\n\(value)"
+            link = value.link
+            
+        case .failure(let error):
+            resultsTextView?.text = "boo!\n\(error)"
+        }
+        update()
     }
 
     private func endOperation<T>(_ result: ImgurUploader.Result<T>) {
@@ -107,14 +155,7 @@ final class ViewController: UIViewController {
         case .failure(let error):
             resultsTextView?.text = "boo!\n\(error)"
         }
-
-        setIsEnabled(true)
-    }
-
-    private func setIsEnabled(_ isEnabled: Bool) {
-        for control in controls ?? [] {
-            control.isEnabled = isEnabled
-        }
+        update()
     }
 
     private func alert(_ error: Error) {
@@ -166,17 +207,21 @@ final class ViewController: UIViewController {
 
 struct MissingClientID: Error {}
 struct MissingImage: Error {}
+struct MissingLink: Error {}
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
 
         imagePickerInfo = info
-
-        let image = info[.editedImage] as? UIImage
-            ?? info[.originalImage] as? UIImage
-        imageButton?.setImage(image, for: .normal)
-        imageButton?.setTitle(image == nil ? "Image" : nil, for: .normal)
+        update()
 
         dismiss(animated: true)
+    }
+}
+
+private extension UserDefaults {
+    @objc var imgurClientID: String? {
+        get { return string(forKey: #function) }
+        set { set(newValue, forKey: #function) }
     }
 }
