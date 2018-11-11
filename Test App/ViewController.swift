@@ -136,7 +136,7 @@ final class ViewController: UIViewController {
         update()
     }
     
-    private func endOperation(_ result: ImgurUploader.Result<UploadResponse>) {
+    private func endOperation(_ result: ImgurUploader.Result<ImgurUploader.UploadResponse>) {
         switch result {
         case .success(let value):
             resultsTextView?.text = "hooray!\n\(value)"

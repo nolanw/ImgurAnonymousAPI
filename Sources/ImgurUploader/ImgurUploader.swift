@@ -1,32 +1,79 @@
 // Public domain. https://github.com/nolanw/ImgurUploader
 
 import Foundation
+#if canImport(Photos)
+import Photos
+#endif
+#if canImport(UIKit)
+import UIKit
+#endif
 
-// something something credits. something something client vs. user credits. something something post credits. something something 5 times in a month = banned for the month.
+/**
+ An Imgur API client for anonymous image uploads.
+ 
+ This client has a very narrow focus: efficiently and anonymously uploading images to Imgur. No other aspects of the Imgur API are available.
+ 
+ Efficiency is meant in two ways: developer efficiency (that's you!) and efficient use of device resources (namely memory). It is not usually terribly difficult to take a `UIImage` you have in memory, obtain a PNG data representation, create a `multipart/form-data` request, and pass that along to a `URLSession`. Life gets annoying when you're writing that pipeline for the fifteenth time, or when you start crashing because you run out of memory trying to resize a gigantic source image by drawing it to a bitmap context. Sometimes you have a `UIImagePickerController` giving you an info dictionary and you just wanna turn that into an Imgur URL, and you don't want to think about it too hard.
+ 
+ The Imgur API enforces various rate limits. As of this writing (2018-11-11), the documentation explains: "Each application can allow approximately 1,250 uploads per day or approximately 12,500 requests per day. If the daily limit is hit five times in a month, then the app will be blocked for the rest of the month." Furthermore, "We also limit each user (via their IP Address) for each application, this is to ensure that no single user is able to spam an application. This limit will simply stop the user from requesting more data for an hour."
+ 
+ Each instance method calls its completion handler with, among other data, the most up-to-date rate limiting information. You might use this information to throttle your calls to the Imgur API or to present more detailed error information to your user.
+ 
+ Since we're talking to the Imgur anonymous image upload API, we use an ephemeral `URLSession`.
+ 
+ Finally, the Imgur API is free for non-commercial use only. "Your application is commercial if you're making any money with it (which includes in-app advertising), if you plan on making any money with it, or if it belongs to a commercial organization." Please see https://apidocs.imgur.com for more details; search for "Commercial Usage" on that page.
+ */
 public final class ImgurUploader {
 
-    // link to the "register an application" page? reiterate "non-commercial usage only"?
-    public init(clientID: String) {
+    /**
+     Create an Imgur anonymous image API client.
+     
+     - Parameter clientID: A client ID obtained by registering your application with Imgur.
+     - Parameter userAgent: If you wish to customize the `User-Agent` header sent to Imgur, you can provide it here.
+     
+     All interaction with the Imgur API requires a client ID. You can obtain a new one:
+     
+     1. Sign up for an Imgur account at https://imgur.com/register
+     2. Register an application at https://api.imgur.com/oauth2/addclient
+     
+     After registering an application, you can find the list of your registered client IDs by visiting https://imgur.com/account/settings/apps
+     
+     Certain API limits are attributed to your client ID and you're generally responsible for its use, so you should keep it somewhat secret (e.g. consider not checking it in to a public repository). Especially if you are paying for commercial usage.
+     
+     Remember that the Imgur API is free for non-commercial use only. "Your application is commercial if you're making any money with it (which includes in-app advertising), if you plan on making any money with it, or if it belongs to a commercial organization." See https://apidocs.imgur.com for more details (search for "Commercial Usage" on that page).
+     */
+    public init(clientID: String, userAgent: String = "") {
         queue = OperationQueue()
         queue.name = "com.nolanw.ImgurUploader"
 
         urlSession = URLSession(configuration: {
             let config = URLSessionConfiguration.ephemeral
-            config.httpAdditionalHeaders = ["Authorization": "Client-ID \(clientID)"]
+            var additionalHeaders = ["Authorization": "Client-ID \(clientID)"]
+            if !userAgent.isEmpty {
+                additionalHeaders["User-Agent"] = userAgent
+            }
+            config.httpAdditionalHeaders = additionalHeaders
             return config
         }())
     }
 
-    // example with how to set this so you can dump logs somewhere
+    /**
+     All uploaders log messages by calling this closure. If you are interested in log messages, maybe during development and/or to pass them along to your existing logging framework, you can set your own closure here.
+     
+     - Warning: Any closure set here can and will be invoked on arbitrary dispatch queues!
+     */
     public static var logger: ((_ level: LogLevel, _ message: () -> String) -> Void)?
 
-    public enum Error: Swift.Error {
-        case invalidClientID
-        case noUploadableImageFromImagePicker
-    }
-
     public enum LogLevel: Comparable {
-        case debug, info, error
+        
+        /// Messages not particularly interesting unless you suspect an `ImgurUploader` instance is misbehaving.
+        case debug
+        
+        /// Messages that are not worth `throw`ing about, but may nonetheless be interesting during normal operation.
+        case info
+        
+        /// Messages that will result in a `throw`n error.
+        case error
 
         public static func < (lhs: LogLevel, rhs: LogLevel) -> Bool {
             switch (lhs, rhs) {
@@ -39,41 +86,42 @@ public final class ImgurUploader {
             }
         }
     }
+    
+    /// One of several possible error types that can be provided to a completion handler on failure.
+    public enum Error: Swift.Error {
+        
+        /// The Imgur API did not like your client ID. Double-check your registered client IDs at https://imgur.com/account/settings/apps, or register a new one at https://api.imgur.com/oauth2/addclient
+        case invalidClientID
+        
+        /// The provided `UIImagePickerController` info dictionary did not include any image that `ImgurUploader` understands how to upload.
+        case noUploadableImageFromImagePicker
+    }
 
-    // Implementation details :)
+    // MARK: - Implementation details
+    
     private let queue: OperationQueue
     private let urlSession: URLSession
-}
 
-internal func log(_ level: ImgurUploader.LogLevel, _ message: @autoclosure () -> String) {
-    ImgurUploader.logger?(level, message)
-}
-
-// MARK: - Photos.framework support
-
-#if canImport(Photos)
-import Photos
-
-@available(macOS 10.13, *)
-extension ImgurUploader {
+    // MARK: - Photos.framework support
+    
+    #if canImport(Photos)
 
     // uses rate limit credits
     // returned progress supports cancellation
     // completion block called on main queue
     // this will trigger "can access photos?" prompt (or crash if missing Info.plist key NSPhotoLibraryUsageDescription)
+    @available(macOS 10.13, *)
     @discardableResult
     public func upload(_ asset: PHAsset, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
         return upload(imageSaveOperation: SavePHAsset(asset), completion: completion)
     }
-}
-#endif
-
-// MARK: - UIKit support
-
-#if canImport(UIKit)
-import UIKit
-
-extension ImgurUploader {
+    
+    #endif
+    
+    // MARK: - UIKit support
+    
+    #if canImport(UIKit)
+    
     // uses rate limit credits
     // returned progress supports cancellation
     // completion block called on main queue
@@ -125,18 +173,17 @@ extension ImgurUploader {
             return progress
         }
     }
-}
-#endif
+    
+    #endif
 
-// MARK: - Generic uploading and support
+    // MARK: - Generic uploading and support
 
-extension ImgurUploader {
     private func upload(imageSaveOperation: Operation, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
         let tempFolder = MakeTemporaryFolder()
 
         imageSaveOperation.addDependency(tempFolder)
 
-        let resize = ResizeImage()
+        let resize = ResizeImage(maximumFileSizeBytes: imgurFileSizeLimit)
         resize.addDependency(imageSaveOperation)
         resize.addDependency(tempFolder)
 
@@ -180,7 +227,7 @@ extension ImgurUploader {
         return progress
     }
 
-    // blah blah error may be CocoaError.userCancelled (check if that's actually a type?) or ImgurUploader.Error or probably other things
+    /// Communication with the Imgur API either succeeds or fails, but never both. Completion handlers are called with an instance of this typical `Result` type.
     public enum Result<T> {
         case success(T)
         case failure(Swift.Error)
@@ -203,47 +250,53 @@ extension ImgurUploader {
             }
         }
     }
-}
 
-// blah blah parsed HTTP response from Imgur
-public struct UploadResponse {
-    public let id: String
-    public let link: URL
-    public let postLimit: PostLimit? // optional because if the info is missing or formatted unexpectedly it doesn’t mean the upload failed
-    public let rateLimit: RateLimit? // optional for same reason as above
-}
-
-internal typealias Result = ImgurUploader.Result
-
-// MARK: - Rate limiting
-
-// blah blah client vs. user rate limit etc.
-public struct RateLimit: Decodable {
-    public let clientAllocation: Int
-    public let clientRemaining: Int
-    // there’s no client reset date but it’s a "per day" thing (not sure what time zone)
-    public let userAllocation: Int
-    public let userRemaining: Int
-    public let userResetDate: Date
-
-    private enum CodingKeys: String, CodingKey {
-        case clientAllocation = "ClientLimit"
-        case clientRemaining = "ClientRemaining"
-        case userAllocation = "UserLimit"
-        case userRemaining = "UserRemaining"
-        case userResetDate = "UserReset"
+    /**
+     The parsed response from a successful upload to the Imgur anonymous image API.
+     */
+    public struct UploadResponse {
+        
+        /// The newly-uploaded image's ID, which forms part of many URLs relating to the image.
+        public let id: String
+        
+        /// The URL pointing at the uploaded image, suitable for downloading or use e.g. in an `<img>` element.
+        public let link: URL
+        
+        /// How many more uploads (`POST` requests) are allowed in the near future, or `nil` if that information is unavailable.
+        public let postLimit: PostLimit?
+        
+        /// How many more API calls are allowed in the near future, or `nil` if that information is unavailable.
+        public let rateLimit: RateLimit? // optional for same reason as above
     }
-}
 
-// blah blah upload responses include a POST limit, explain how that works (hourly? from IP address? check docs)
-public struct PostLimit {
-    public let allocation: Int
-    public let remaining: Int
-    public let timeUntilReset: TimeInterval
-}
+    // MARK: - Rate limiting
+    
+    // blah blah upload responses include a POST limit, explain how that works (hourly? from IP address? check docs)
+    public struct PostLimit {
+        public let allocation: Int
+        public let remaining: Int
+        public let timeUntilReset: TimeInterval
+    }
+    
+    // blah blah client vs. user rate limit etc.
+    public struct RateLimit: Decodable {
+        public let clientAllocation: Int
+        public let clientRemaining: Int
+        // there’s no client reset date but it’s a "per day" thing (not sure what time zone)
+        public let userAllocation: Int
+        public let userRemaining: Int
+        public let userResetDate: Date
+        
+        private enum CodingKeys: String, CodingKey {
+            case clientAllocation = "ClientLimit"
+            case clientRemaining = "ClientRemaining"
+            case userAllocation = "UserLimit"
+            case userRemaining = "UserRemaining"
+            case userResetDate = "UserReset"
+        }
+    }
 
-extension ImgurUploader {
-// does not seem to use credits (thankfully)
+    // does not seem to use credits (thankfully)
     // does not include POST limits
     // returned progress supports cancellation
     // completion block called on main queue
@@ -272,20 +325,8 @@ extension ImgurUploader {
 
         return progress
     }
-}
 
-// MARK: - Delete uploaded images
-
-// blah blah imgur says these follow a certain format but this struct doesn't try to enforce that format
-public struct DeleteHash: RawRepresentable {
-    public let rawValue: String
-
-    public init(rawValue: String) {
-        self.rawValue = rawValue
-    }
-}
-
-extension ImgurUploader {
+    // MARK: - Delete uploaded images
 
     // (presumably) uses credits
     // returned progress supports cancellation
@@ -326,4 +367,34 @@ extension ImgurUploader {
 
         return progress
     }
+    
+    // blah blah imgur says these follow a certain format but this struct doesn't try to enforce that format
+    public struct DeleteHash: RawRepresentable {
+        public let rawValue: String
+        
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+    }
 }
+
+/**
+ The documented file size limit for uploaded non-animated images.
+ 
+ We have a couple of candidate sizes:
+ 
+ * 10 MB, per https://api.imgur.com/endpoints/image#image-upload
+ * 10 MB, per https://apidocs.imgur.com/#c85c9dfc-7487-4de2-9ecd-66f727cf3139
+ * 20 MB, per https://help.imgur.com/hc/en-us/articles/115000083326
+ 
+ There's also no mention of whether a megabyte is 2^20 bytes or 10^6 bytes.
+ 
+ As of 2018-11-04, an 18.7 MB file was rejected with "File is over the size limit", so I guess that rules out 20 MB. And a 10,018,523 byte file was similarly rejected, so 10^6 it is!
+ */
+private let imgurFileSizeLimit = 10_000_000
+
+internal func log(_ level: ImgurUploader.LogLevel, _ message: @autoclosure () -> String) {
+    ImgurUploader.logger?(level, message)
+}
+
+internal typealias Result = ImgurUploader.Result

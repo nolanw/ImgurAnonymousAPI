@@ -10,35 +10,48 @@ import Foundation
 
 internal struct MissingResponseData: Error {}
 
-public struct APIError: Decodable, Error {
-    let error: Either<String, DetailedAPIError>
-
-    var localizedDescription: String {
-        switch error {
-        case .left(let string):
-            return string
-        case .right(let detail):
-            return detail.message
+extension ImgurUploader {
+    
+    /// An error from the Imgur anonymous upload API.
+    public struct APIError: Swift.Error {
+        
+        /// Sometimes Imgur provides just a plain string explaining the problem, and other times they include more info.
+        public let error: Either<String, DetailedAPIError>
+        
+        public var localizedDescription: String {
+            switch error {
+            case .left(let string):
+                return string
+            case .right(let detail):
+                return detail.message
+            }
         }
+    }
+
+    public struct DetailedAPIError {
+        public let code: Int
+        public let message: String
+        public let type: String
     }
 }
 
-public struct DetailedAPIError: Decodable {
-    let code: Int
-    let message: String
-    let type: String
-}
+extension ImgurUploader.APIError: Decodable {}
+extension ImgurUploader.DetailedAPIError: Decodable {}
 
 internal struct APIResponse<T: Decodable>: Decodable {
-    let data: Either<T, APIError>
+    let data: ImgurUploader.Either<T, ImgurUploader.APIError>
     let status: Int
     let success: Bool
 }
 
-internal enum Either<T: Decodable, U: Decodable>: Decodable {
-    case left(T), right(U)
+extension ImgurUploader {
+    public enum Either<T: Decodable, U: Decodable> {
+        case left(T), right(U)
+    }
+}
 
-    init(from decoder: Decoder) throws {
+extension ImgurUploader.Either: Decodable {
+    public init(from decoder: Decoder) throws {
         do {
             self = .left(try T(from: decoder))
         } catch {
@@ -47,6 +60,7 @@ internal enum Either<T: Decodable, U: Decodable>: Decodable {
     }
 }
 
+/// Runs a URLSessionTask and decodes the response data as JSON.
 internal final class FetchURL<T: Decodable>: AsynchronousOperation<T> {
     private var task: URLSessionDataTask?
 
@@ -90,7 +104,8 @@ internal final class FetchURL<T: Decodable>: AsynchronousOperation<T> {
     }
 }
 
-internal final class UploadImageAsFormData: AsynchronousOperation<UploadResponse> {
+/// Sends a multipart/form-data upload request, then parses the response's body and headers.
+internal final class UploadImageAsFormData: AsynchronousOperation<ImgurUploader.UploadResponse> {
     private let request: URLRequest
     private var task: URLSessionUploadTask?
     private let urlSession: URLSession
@@ -149,11 +164,11 @@ internal final class UploadImageAsFormData: AsynchronousOperation<UploadResponse
                 return Dictionary(downcased, uniquingKeysWith: { $1 })
             }()
             
-            self.finish(.success(UploadResponse(
+            self.finish(.success(.init(
                 id: responseData.id,
                 link: responseData.link,
-                postLimit: PostLimit(headers),
-                rateLimit: RateLimit(headers))))
+                postLimit: ImgurUploader.PostLimit(headers),
+                rateLimit: ImgurUploader.RateLimit(headers))))
         }
 
         log(.debug, "starting \(self) with url \(request.url as Any)")
@@ -166,7 +181,7 @@ internal final class UploadImageAsFormData: AsynchronousOperation<UploadResponse
     }
 }
 
-private extension PostLimit {
+private extension ImgurUploader.PostLimit {
     init?(_ headers: [String: Any]) {
         guard
             let rawAllocation = headers["x-post-rate-limit-limit"] as? String,
@@ -183,7 +198,7 @@ private extension PostLimit {
     }
 }
 
-private extension RateLimit {
+private extension ImgurUploader.RateLimit {
     init?(_ headers: [String: Any]) {
         guard
             let rawClientAllocation = headers["x-ratelimit-clientlimit"] as? String,

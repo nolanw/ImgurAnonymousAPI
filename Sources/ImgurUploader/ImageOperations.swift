@@ -25,29 +25,29 @@ internal enum ImageError: Error {
 }
 
 /**
- The documented file size limit for uploaded non-animated images.
+ Ensures an image file is below a maximum file size threshold, resizing the image if necessary.
  
- We have a couple of candidate sizes:
- 
-    * 10 MB, per https://api.imgur.com/endpoints/image#image-upload
-    * 10 MB, per https://apidocs.imgur.com/#c85c9dfc-7487-4de2-9ecd-66f727cf3139
-    * 20 MB, per https://help.imgur.com/hc/en-us/articles/115000083326
- 
- As of 2018-11-04, an 18.7 MB file was rejected with "File is over the size limit", so I guess that rules out 20 MB. And a 10,018,523 byte file was similarly rejected, so 10^6 it is!
+ The image is resized without being fully dragged into memory.
  */
-private let imgurFileSizeLimit = 10_000_000
-
 internal final class ResizeImage: AsynchronousOperation<ImageFile> {
+    
+    private let maximumFileSizeBytes: Int
+    
+    init(maximumFileSizeBytes: Int) {
+        self.maximumFileSizeBytes = maximumFileSizeBytes
+    }
+    
     override func execute() throws {
         let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
         let originalImage = try firstDependencyValue(ofType: ImageFile.self)
+        
         log(.debug, "someone wants to resize \(originalImage) in \(tempFolder)")
 
         guard let originalByteSize = try originalImage.url.resourceValues(forKeys: [.fileSizeKey]).fileSize else {
             throw ImageError.indeterminateOriginalFileSize
         }
         
-        if originalByteSize <= imgurFileSizeLimit {
+        if originalByteSize <= maximumFileSizeBytes {
             log(.debug, "original image is within the file size limit so there's nothing to resize")
             return finish(.success(originalImage))
         } else {
@@ -101,7 +101,7 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
                 throw ImageError.indeterminateThumbnailFileSize
             }
 
-            if byteSize <= imgurFileSizeLimit {
+            if byteSize <= maximumFileSizeBytes {
                 log(.debug, "scaled image down to \(maxPixelSize)px as its larger dimension, which gets it to \(byteSize) bytes, which is within the file size limit")
                 return finish(.success(ImageFile(url: resizedImageURL)))
             }
@@ -112,8 +112,10 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
 #if canImport(Photos)
 import Photos
 
+/// Retrieves image data for a `PHAsset` and saves it to a file in a temporary folder.
 internal final class SavePHAsset: AsynchronousOperation<ImageFile> {
     
+    /// Returns `true` when the app has a photo library usage description and the user has authorized said access.
     static var hasRequiredPhotoLibraryAuthorization: Bool {
         
         // "Apps linked on or after iOS 10 will crash if [the NSPhotoLibraryUsageDescription] key is not present."
@@ -176,6 +178,7 @@ internal final class SavePHAsset: AsynchronousOperation<ImageFile> {
 import MobileCoreServices
 import UIKit
 
+/// Writes the image data to file in a temporary folder.
 internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
     private let image: UIImage
 

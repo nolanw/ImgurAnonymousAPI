@@ -71,6 +71,7 @@ internal class AsynchronousOperation<T>: Foundation.Operation {
         }
     }
 
+    /// Subclasses must override this method and call `finish(_:)` when they're done.
     func execute() throws {
         fatalError("\(type(of: self)) must override \(#function)")
     }
@@ -97,6 +98,8 @@ internal class AsynchronousOperation<T>: Foundation.Operation {
 }
 
 extension AsynchronousOperation {
+    
+    /// Finds the first `AsynchronousOperation` among this operation's dependencies that resulted in a `T`. Throws an error if no such operation is found.
     func firstDependencyValue<T>(ofType resultType: T.Type) throws -> T {
         let candidates = dependencies.lazy
             .compactMap { $0 as? AsynchronousOperation<T> }
