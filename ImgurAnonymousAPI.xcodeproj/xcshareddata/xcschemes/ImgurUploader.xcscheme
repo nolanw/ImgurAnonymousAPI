@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1CF0A6A5209FC6A3004C26EA"
-               BuildableName = "libImgurUploader.a"
-               BlueprintName = "ImgurUploader-Static"
-               ReferencedContainer = "container:ImgurUploader.xcodeproj">
+               BlueprintIdentifier = "1CF0A692209FC612004C26EA"
+               BuildableName = "ImgurAnonymousAPI.framework"
+               BlueprintName = "ImgurAnonymousAPI"
+               ReferencedContainer = "container:ImgurAnonymousAPI.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,6 +29,15 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1CF0A692209FC612004C26EA"
+            BuildableName = "ImgurAnonymousAPI.framework"
+            BlueprintName = "ImgurAnonymousAPI"
+            ReferencedContainer = "container:ImgurAnonymousAPI.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -45,10 +54,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1CF0A6A5209FC6A3004C26EA"
-            BuildableName = "libImgurUploader.a"
-            BlueprintName = "ImgurUploader-Static"
-            ReferencedContainer = "container:ImgurUploader.xcodeproj">
+            BlueprintIdentifier = "1CF0A692209FC612004C26EA"
+            BuildableName = "ImgurAnonymousAPI.framework"
+            BlueprintName = "ImgurAnonymousAPI"
+            ReferencedContainer = "container:ImgurAnonymousAPI.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,10 +72,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1CF0A6A5209FC6A3004C26EA"
-            BuildableName = "libImgurUploader.a"
-            BlueprintName = "ImgurUploader-Static"
-            ReferencedContainer = "container:ImgurUploader.xcodeproj">
+            BlueprintIdentifier = "1CF0A692209FC612004C26EA"
+            BuildableName = "ImgurAnonymousAPI.framework"
+            BlueprintName = "ImgurAnonymousAPI"
+            ReferencedContainer = "container:ImgurAnonymousAPI.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

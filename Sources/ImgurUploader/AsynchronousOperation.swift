@@ -1,10 +1,4 @@
-//
-//  AsynchronousOperation.swift
-//  ImgurUploader
-//
-//  Created by Nolan Waite on 2018-05-13.
-//  Copyright © 2018 Nolan Waite. All rights reserved.
-//
+// Public domain. https://github.com/nolanw/ImgurAnonymousAPI
 
 import Foundation
 
@@ -21,7 +15,7 @@ import Foundation
  * Error reporting via convenient `throw`.
  */
 internal class AsynchronousOperation<T>: Foundation.Operation {
-    private let queue = DispatchQueue(label: "com.nolanw.ImgurUploader.async-operation-state")
+    private let queue = DispatchQueue(label: "com.nolanw.ImgurAnonymousAPI.async-operation-state")
     private(set) var result: Result<T>?
     private var _state: AsynchronousOperationState = .ready
 

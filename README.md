@@ -1,4 +1,4 @@
-# ImgurUploader
+# ImgurAnonymousAPI
 
 Uploads images "anonymously" (i.e. unassociated with an account) using version 3 of the Imgur API.
 

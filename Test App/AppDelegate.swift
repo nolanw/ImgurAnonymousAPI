@@ -1,12 +1,6 @@
-//
-//  AppDelegate.swift
-//  iOSTestApp
-//
-//  Created by Nolan Waite on 2018-05-13.
-//  Copyright © 2018 Nolan Waite. All rights reserved.
-//
+// Public domain. https://github.com/nolanw/ImgurAnonymousAPI
 
-import ImgurUploader
+import ImgurAnonymousAPI
 import UIKit
 
 @UIApplicationMain

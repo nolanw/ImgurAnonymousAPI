@@ -1,4 +1,4 @@
-// Public domain. https://github.com/nolanw/ImgurUploader
+// Public domain. https://github.com/nolanw/ImgurAnonymousAPI
 
 import Foundation
 #if canImport(Photos)
@@ -44,7 +44,7 @@ public final class ImgurUploader {
      */
     public init(clientID: String, userAgent: String = "") {
         queue = OperationQueue()
-        queue.name = "com.nolanw.ImgurUploader"
+        queue.name = "com.nolanw.ImgurAnonymousAPI"
 
         urlSession = URLSession(configuration: {
             let config = URLSessionConfiguration.ephemeral
@@ -66,7 +66,7 @@ public final class ImgurUploader {
 
     public enum LogLevel: Comparable {
         
-        /// Messages not particularly interesting unless you suspect an `ImgurUploader` instance is misbehaving.
+        /// Messages not particularly interesting unless you suspect an `ImgurAnonymousAPI` instance is misbehaving.
         case debug
         
         /// Messages that are not worth `throw`ing about, but may nonetheless be interesting during normal operation.

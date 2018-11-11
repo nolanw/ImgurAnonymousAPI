@@ -7,11 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1CF0A698209FC612004C26EA /* ImgurUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CF0A696209FC612004C26EA /* ImgurUploader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1CF0A698209FC612004C26EA /* ImgurAnonymousAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CF0A696209FC612004C26EA /* ImgurAnonymousAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1CF0A6A1209FC66B004C26EA /* ImgurUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6A0209FC66A004C26EA /* ImgurUploader.swift */; };
 		1CF0A6AD209FC6B5004C26EA /* ImgurUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6A0209FC66A004C26EA /* ImgurUploader.swift */; };
-		1CF0A6B6209FE192004C26EA /* ImgurUploaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6B5209FE192004C26EA /* ImgurUploaderTests.swift */; };
-		1CF0A6B8209FE192004C26EA /* ImgurUploader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0A693209FC612004C26EA /* ImgurUploader.framework */; };
 		1CF0A6C720A8BEB9004C26EA /* AsynchronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6C620A8BEB9004C26EA /* AsynchronousOperation.swift */; };
 		1CF0A6C820A8BEB9004C26EA /* AsynchronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6C620A8BEB9004C26EA /* AsynchronousOperation.swift */; };
 		1CF0A6CA20A8BF8D004C26EA /* TemporaryFolderOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF0A6C920A8BF8D004C26EA /* TemporaryFolderOperations.swift */; };
@@ -27,18 +25,11 @@
 		1CF0A6E120A8E27F004C26EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0A6DF20A8E27F004C26EA /* Main.storyboard */; };
 		1CF0A6E320A8E285004C26EA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0A6E220A8E285004C26EA /* Assets.xcassets */; };
 		1CF0A6E620A8E285004C26EA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CF0A6E420A8E285004C26EA /* LaunchScreen.storyboard */; };
-		1CF0A6ED20A8E73F004C26EA /* ImgurUploader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0A693209FC612004C26EA /* ImgurUploader.framework */; };
-		1CF0A6EE20A8E73F004C26EA /* ImgurUploader.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0A693209FC612004C26EA /* ImgurUploader.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1CF0A6ED20A8E73F004C26EA /* ImgurAnonymousAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0A693209FC612004C26EA /* ImgurAnonymousAPI.framework */; };
+		1CF0A6EE20A8E73F004C26EA /* ImgurAnonymousAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF0A693209FC612004C26EA /* ImgurAnonymousAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1CF0A6B9209FE192004C26EA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1CF0A68A209FC612004C26EA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1CF0A692209FC612004C26EA;
-			remoteInfo = ImgurUploader;
-		};
 		1CF0A6EF20A8E73F004C26EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1CF0A68A209FC612004C26EA /* Project object */;
@@ -64,7 +55,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				1CF0A6EE20A8E73F004C26EA /* ImgurUploader.framework in Embed Frameworks */,
+				1CF0A6EE20A8E73F004C26EA /* ImgurAnonymousAPI.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -72,26 +63,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1CF0A693209FC612004C26EA /* ImgurUploader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ImgurUploader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1CF0A696209FC612004C26EA /* ImgurUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImgurUploader.h; sourceTree = "<group>"; };
+		1CF0A693209FC612004C26EA /* ImgurAnonymousAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ImgurAnonymousAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CF0A696209FC612004C26EA /* ImgurAnonymousAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImgurAnonymousAPI.h; sourceTree = "<group>"; };
 		1CF0A697209FC612004C26EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CF0A6A0209FC66A004C26EA /* ImgurUploader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImgurUploader.swift; path = ImgurUploader/ImgurUploader.swift; sourceTree = "<group>"; };
-		1CF0A6A6209FC6A3004C26EA /* libImgurUploader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libImgurUploader.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CF0A6A6209FC6A3004C26EA /* libImgurAnonymousAPI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libImgurAnonymousAPI.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CF0A6AE209FC817004C26EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		1CF0A6B3209FE192004C26EA /* ImgurUploaderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImgurUploaderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1CF0A6B5209FE192004C26EA /* ImgurUploaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImgurUploaderTests.swift; path = ImgurUploaderTests/ImgurUploaderTests.swift; sourceTree = "<group>"; };
-		1CF0A6B7209FE192004C26EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CF0A6C0209FE471004C26EA /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		1CF0A6C1209FE479004C26EA /* ImgurUploader.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ImgurUploader.podspec; sourceTree = "<group>"; };
+		1CF0A6C1209FE479004C26EA /* ImgurAnonymousAPI.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = ImgurAnonymousAPI.podspec; sourceTree = "<group>"; };
 		1CF0A6C2209FE486004C26EA /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1CF0A6C3209FE49F004C26EA /* XCTestManifests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = XCTestManifests.swift; path = ImgurUploaderTests/XCTestManifests.swift; sourceTree = "<group>"; };
-		1CF0A6C4209FE4A5004C26EA /* LinuxMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinuxMain.swift; sourceTree = "<group>"; };
 		1CF0A6C620A8BEB9004C26EA /* AsynchronousOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AsynchronousOperation.swift; path = ImgurUploader/AsynchronousOperation.swift; sourceTree = "<group>"; };
 		1CF0A6C920A8BF8D004C26EA /* TemporaryFolderOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemporaryFolderOperations.swift; path = ImgurUploader/TemporaryFolderOperations.swift; sourceTree = "<group>"; };
 		1CF0A6CC20A8BFDC004C26EA /* URLSessionOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = URLSessionOperations.swift; path = ImgurUploader/URLSessionOperations.swift; sourceTree = "<group>"; };
 		1CF0A6CF20A8C09B004C26EA /* ImageOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageOperations.swift; path = ImgurUploader/ImageOperations.swift; sourceTree = "<group>"; };
 		1CF0A6D220A8C911004C26EA /* WriteMultipartFormData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WriteMultipartFormData.swift; path = ImgurUploader/WriteMultipartFormData.swift; sourceTree = "<group>"; };
-		1CF0A6D920A8E27E004C26EA /* ImgurUploader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImgurUploader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CF0A6D920A8E27E004C26EA /* ImgurAnonymousAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImgurAnonymousAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CF0A6DB20A8E27F004C26EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CF0A6DD20A8E27F004C26EA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		1CF0A6E020A8E27F004C26EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -115,19 +101,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1CF0A6B0209FE192004C26EA /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1CF0A6B8209FE192004C26EA /* ImgurUploader.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1CF0A6D620A8E27E004C26EA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CF0A6ED20A8E73F004C26EA /* ImgurUploader.framework in Frameworks */,
+				1CF0A6ED20A8E73F004C26EA /* ImgurAnonymousAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,7 +122,6 @@
 				1CF0A6AE209FC817004C26EA /* README.md */,
 				1CF0A69E209FC66A004C26EA /* Sources */,
 				1CF0A6DA20A8E27F004C26EA /* Test App */,
-				1CF0A6B4209FE192004C26EA /* Tests */,
 				1CF0A6EB20A8E2E6004C26EA /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -152,10 +129,9 @@
 		1CF0A694209FC612004C26EA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1CF0A693209FC612004C26EA /* ImgurUploader.framework */,
-				1CF0A6A6209FC6A3004C26EA /* libImgurUploader.a */,
-				1CF0A6B3209FE192004C26EA /* ImgurUploaderTests.xctest */,
-				1CF0A6D920A8E27E004C26EA /* ImgurUploader.app */,
+				1CF0A693209FC612004C26EA /* ImgurAnonymousAPI.framework */,
+				1CF0A6A6209FC6A3004C26EA /* libImgurAnonymousAPI.a */,
+				1CF0A6D920A8E27E004C26EA /* ImgurAnonymousAPI.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -163,7 +139,7 @@
 		1CF0A695209FC612004C26EA /* Framework */ = {
 			isa = PBXGroup;
 			children = (
-				1CF0A696209FC612004C26EA /* ImgurUploader.h */,
+				1CF0A696209FC612004C26EA /* ImgurAnonymousAPI.h */,
 				1CF0A697209FC612004C26EA /* Info.plist */,
 			);
 			path = Framework;
@@ -182,21 +158,10 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		1CF0A6B4209FE192004C26EA /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				1CF0A6B5209FE192004C26EA /* ImgurUploaderTests.swift */,
-				1CF0A6B7209FE192004C26EA /* Info.plist */,
-				1CF0A6C4209FE4A5004C26EA /* LinuxMain.swift */,
-				1CF0A6C3209FE49F004C26EA /* XCTestManifests.swift */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
 		1CF0A6BF209FE463004C26EA /* Distribution */ = {
 			isa = PBXGroup;
 			children = (
-				1CF0A6C1209FE479004C26EA /* ImgurUploader.podspec */,
+				1CF0A6C1209FE479004C26EA /* ImgurAnonymousAPI.podspec */,
 				1CF0A6C0209FE471004C26EA /* Package.swift */,
 			);
 			name = Distribution;
@@ -229,16 +194,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CF0A698209FC612004C26EA /* ImgurUploader.h in Headers */,
+				1CF0A698209FC612004C26EA /* ImgurAnonymousAPI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1CF0A692209FC612004C26EA /* ImgurUploader */ = {
+		1CF0A692209FC612004C26EA /* ImgurAnonymousAPI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1CF0A69B209FC612004C26EA /* Build configuration list for PBXNativeTarget "ImgurUploader" */;
+			buildConfigurationList = 1CF0A69B209FC612004C26EA /* Build configuration list for PBXNativeTarget "ImgurAnonymousAPI" */;
 			buildPhases = (
 				1CF0A68E209FC612004C26EA /* Sources */,
 				1CF0A68F209FC612004C26EA /* Frameworks */,
@@ -249,14 +214,14 @@
 			);
 			dependencies = (
 			);
-			name = ImgurUploader;
+			name = ImgurAnonymousAPI;
 			productName = ImgurUploader;
-			productReference = 1CF0A693209FC612004C26EA /* ImgurUploader.framework */;
+			productReference = 1CF0A693209FC612004C26EA /* ImgurAnonymousAPI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		1CF0A6A5209FC6A3004C26EA /* ImgurUploader-Static */ = {
+		1CF0A6A5209FC6A3004C26EA /* ImgurAnonymousAPI-Static */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1CF0A6AA209FC6A3004C26EA /* Build configuration list for PBXNativeTarget "ImgurUploader-Static" */;
+			buildConfigurationList = 1CF0A6AA209FC6A3004C26EA /* Build configuration list for PBXNativeTarget "ImgurAnonymousAPI-Static" */;
 			buildPhases = (
 				1CF0A6A2209FC6A3004C26EA /* Sources */,
 				1CF0A6A3209FC6A3004C26EA /* Frameworks */,
@@ -266,28 +231,10 @@
 			);
 			dependencies = (
 			);
-			name = "ImgurUploader-Static";
+			name = "ImgurAnonymousAPI-Static";
 			productName = "ImgurUploader-Static";
-			productReference = 1CF0A6A6209FC6A3004C26EA /* libImgurUploader.a */;
+			productReference = 1CF0A6A6209FC6A3004C26EA /* libImgurAnonymousAPI.a */;
 			productType = "com.apple.product-type.library.static";
-		};
-		1CF0A6B2209FE192004C26EA /* ImgurUploaderTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1CF0A6BB209FE192004C26EA /* Build configuration list for PBXNativeTarget "ImgurUploaderTests" */;
-			buildPhases = (
-				1CF0A6AF209FE192004C26EA /* Sources */,
-				1CF0A6B0209FE192004C26EA /* Frameworks */,
-				1CF0A6B1209FE192004C26EA /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1CF0A6BA209FE192004C26EA /* PBXTargetDependency */,
-			);
-			name = ImgurUploaderTests;
-			productName = ImgurUploaderTests;
-			productReference = 1CF0A6B3209FE192004C26EA /* ImgurUploaderTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		1CF0A6D820A8E27E004C26EA /* iOSTestApp */ = {
 			isa = PBXNativeTarget;
@@ -305,7 +252,7 @@
 			);
 			name = iOSTestApp;
 			productName = iOSTestApp;
-			productReference = 1CF0A6D920A8E27E004C26EA /* ImgurUploader.app */;
+			productReference = 1CF0A6D920A8E27E004C26EA /* ImgurAnonymousAPI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -325,16 +272,13 @@
 					1CF0A6A5209FC6A3004C26EA = {
 						CreatedOnToolsVersion = 9.3;
 					};
-					1CF0A6B2209FE192004C26EA = {
-						CreatedOnToolsVersion = 9.3;
-					};
 					1CF0A6D820A8E27E004C26EA = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 1010;
 					};
 				};
 			};
-			buildConfigurationList = 1CF0A68D209FC612004C26EA /* Build configuration list for PBXProject "ImgurUploader" */;
+			buildConfigurationList = 1CF0A68D209FC612004C26EA /* Build configuration list for PBXProject "ImgurAnonymousAPI" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -347,9 +291,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1CF0A692209FC612004C26EA /* ImgurUploader */,
-				1CF0A6A5209FC6A3004C26EA /* ImgurUploader-Static */,
-				1CF0A6B2209FE192004C26EA /* ImgurUploaderTests */,
+				1CF0A692209FC612004C26EA /* ImgurAnonymousAPI */,
+				1CF0A6A5209FC6A3004C26EA /* ImgurAnonymousAPI-Static */,
 				1CF0A6D820A8E27E004C26EA /* iOSTestApp */,
 			);
 		};
@@ -357,13 +300,6 @@
 
 /* Begin PBXResourcesBuildPhase section */
 		1CF0A691209FC612004C26EA /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1CF0A6B1209FE192004C26EA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -409,14 +345,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1CF0A6AF209FE192004C26EA /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1CF0A6B6209FE192004C26EA /* ImgurUploaderTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1CF0A6D520A8E27E004C26EA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -429,14 +357,9 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1CF0A6BA209FE192004C26EA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1CF0A692209FC612004C26EA /* ImgurUploader */;
-			targetProxy = 1CF0A6B9209FE192004C26EA /* PBXContainerItemProxy */;
-		};
 		1CF0A6F020A8E73F004C26EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1CF0A692209FC612004C26EA /* ImgurUploader */;
+			target = 1CF0A692209FC612004C26EA /* ImgurAnonymousAPI */;
 			targetProxy = 1CF0A6EF20A8E73F004C26EA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -601,7 +524,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurAnonymousAPI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -624,7 +547,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurAnonymousAPI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -637,7 +560,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9RR6L9X39A;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = ImgurUploader;
+				PRODUCT_NAME = ImgurAnonymousAPI;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 			};
@@ -649,48 +572,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 9RR6L9X39A;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = ImgurUploader;
+				PRODUCT_NAME = ImgurAnonymousAPI;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
-			};
-			name = Release;
-		};
-		1CF0A6BC209FE192004C26EA /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploaderTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
-			};
-			name = Debug;
-		};
-		1CF0A6BD209FE192004C26EA /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploaderTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
@@ -707,9 +590,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader.iOSTestApp;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurAnonymousAPI.iOSTestApp;
 				PRODUCT_MODULE_NAME = iOSTestApp;
-				PRODUCT_NAME = ImgurUploader;
+				PRODUCT_NAME = ImgurAnonymousAPI;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -727,9 +610,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurUploader.iOSTestApp;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.nolanw.ImgurAnonymousAPI.iOSTestApp;
 				PRODUCT_MODULE_NAME = iOSTestApp;
-				PRODUCT_NAME = ImgurUploader;
+				PRODUCT_NAME = ImgurAnonymousAPI;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -738,7 +621,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1CF0A68D209FC612004C26EA /* Build configuration list for PBXProject "ImgurUploader" */ = {
+		1CF0A68D209FC612004C26EA /* Build configuration list for PBXProject "ImgurAnonymousAPI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1CF0A699209FC612004C26EA /* Debug */,
@@ -747,7 +630,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1CF0A69B209FC612004C26EA /* Build configuration list for PBXNativeTarget "ImgurUploader" */ = {
+		1CF0A69B209FC612004C26EA /* Build configuration list for PBXNativeTarget "ImgurAnonymousAPI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1CF0A69C209FC612004C26EA /* Debug */,
@@ -756,20 +639,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1CF0A6AA209FC6A3004C26EA /* Build configuration list for PBXNativeTarget "ImgurUploader-Static" */ = {
+		1CF0A6AA209FC6A3004C26EA /* Build configuration list for PBXNativeTarget "ImgurAnonymousAPI-Static" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1CF0A6AB209FC6A3004C26EA /* Debug */,
 				1CF0A6AC209FC6A3004C26EA /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1CF0A6BB209FE192004C26EA /* Build configuration list for PBXNativeTarget "ImgurUploaderTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1CF0A6BC209FE192004C26EA /* Debug */,
-				1CF0A6BD209FE192004C26EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
