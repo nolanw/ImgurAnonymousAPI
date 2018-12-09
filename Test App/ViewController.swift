@@ -52,6 +52,7 @@ final class ViewController: UIViewController {
         clientID = sender.text ?? ""
         UserDefaults.standard.imgurClientID = clientID
         uploader = nil
+        update()
     }
 
     @IBAction private func didTapCheckRateLimits(_ sender: Any) {
