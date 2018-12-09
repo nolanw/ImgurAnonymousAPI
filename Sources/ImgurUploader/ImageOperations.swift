@@ -51,7 +51,7 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
         }
         
         if originalByteSize <= maximumFileSizeBytes {
-            log(.debug, "original image is within the file size limit so there's nothing to resize")
+            log(.debug, "original image at \(originalByteSize) bytes is within the file size limit of \(maximumFileSizeBytes) so there's nothing to resize")
             return finish(.success(originalImage))
         } else {
             log(.debug, "original image is too large, will need to resize")
