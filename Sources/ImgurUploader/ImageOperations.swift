@@ -137,7 +137,7 @@ internal final class SavePHAsset: AsynchronousOperation<ImageFile> {
         let resources = PHAssetResource.assetResources(for: asset)
         guard
             let photo = resources.first(where: { $0.type == .fullSizePhoto })
-            ?? resources.first(where: { $0.type == .photo })
+                ?? resources.first(where: { $0.type == .photo })
             else { throw ImageError.missingPhotoResource }
 
         let imageURL: URL = {
