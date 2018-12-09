@@ -134,6 +134,7 @@ public final class ImgurUploader {
     // completion block called on main queue
     // if user has allowed photo library access, image data is obtained therefrom; but this method will never result in the user being asked to authorize photo library access. nor will this method crash if your Info.plist has no value for "NSPhotoLibraryUsageDescription"
     // note that as of iOS 11 (?) you can use an image picker, and this method to upload to imgur, without bothering with "NSPhotoLibraryUsageDescription" or photo library authorization
+    // note that the only way to get animated images out of the image picker is when we have photo library support. ImgurUploader will never request photo library authorization on your behalf, so if animated images are a consideration you should request photo library authorization
     @discardableResult
     public func upload(_ info: [UIImagePickerController.InfoKey: Any], completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
 

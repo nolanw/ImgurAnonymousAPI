@@ -36,6 +36,15 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
         let originalImage = try firstDependencyValue(ofType: ImageFile.self)
         
         log(.debug, "someone wants to resize \(originalImage) in \(tempFolder)")
+        
+        guard let imageSource = CGImageSourceCreateWithURL(originalImage.url as CFURL, nil) else {
+            throw ImageError.sourceCreationFailed
+        }
+        
+        if let uti = CGImageSourceGetType(imageSource), UTTypeConformsTo(uti, kUTTypeGIF) {
+            log(.debug, "original image is a GIF which we can't resize, so we'll just try the original")
+            return finish(.success(originalImage))
+        }
 
         guard let originalByteSize = try originalImage.url.resourceValues(forKeys: [.fileSizeKey]).fileSize else {
             throw ImageError.indeterminateOriginalFileSize
@@ -47,14 +56,10 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
         } else {
             log(.debug, "original image is too large, will need to resize")
         }
-
-        guard let imageSource = CGImageSourceCreateWithURL(originalImage.url as CFURL, nil) else {
-            throw ImageError.sourceCreationFailed
-        }
         
         var maxPixelSize: Int
         if
-            let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as NSDictionary?,
+            let properties = CGImageSourceCopyProperties(imageSource, nil) as NSDictionary?,
             let width = properties[kCGImagePropertyPixelWidth] as? Int,
             let height = properties[kCGImagePropertyPixelHeight] as? Int
         {
@@ -181,8 +186,46 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
     }
 
     override func execute() throws {
+        let imageURL: URL
+        if let images = image.images, images.count > 1 {
+            imageURL = try saveAnimated(frames: images)
+        } else {
+            imageURL = try saveStatic()
+        }
+        finish(.success(ImageFile(url: imageURL)))
+    }
+    
+    private func saveAnimated(frames: [UIImage]) throws -> URL {
         let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
-        let imageURL = tempFolder.url.appendingPathComponent("original.png", isDirectory: false)
+        let imageURL = tempFolder.url.appendingPathComponent("original.gif", isDirectory: false)
+        
+        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypeGIF, frames.count, nil) else {
+            throw ImageError.destinationCreationFailed
+        }
+        CGImageDestinationSetProperties(destination, [
+            kCGImagePropertyGIFDictionary: [
+                kCGImagePropertyGIFLoopCount: 0]] as [AnyHashable: Any] as CFDictionary)
+        
+        let frameProperties = [
+            kCGImagePropertyGIFDictionary: [
+                kCGImagePropertyGIFDelayTime: image.duration / Double(frames.count)] as [AnyHashable: Any]] as CFDictionary
+        
+        for frame in frames {
+            guard let cgImage = frame.cgImage else {
+                throw ImageError.missingCGImage
+            }
+            CGImageDestinationAddImage(destination, cgImage, frameProperties)
+        }
+        
+        log(.debug, "saving \(image) to \(imageURL)")
+        CGImageDestinationFinalize(destination)
+        
+        return imageURL
+    }
+    
+    private func saveStatic() throws -> URL {
+        let tempFolder = try firstDependencyValue(ofType: TemporaryFolder.self)
+        let imageURL = tempFolder.url.appendingPathComponent("original.tiff", isDirectory: false)
 
         guard let cgImage = image.cgImage else {
             throw ImageError.missingCGImage
@@ -207,7 +250,7 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
         log(.debug, "saving \(image) to \(imageURL)")
         CGImageDestinationFinalize(destination)
 
-        finish(.success(ImageFile(url: imageURL)))
+        return imageURL
     }
 }
 
