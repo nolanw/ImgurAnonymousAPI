@@ -106,10 +106,19 @@ public final class ImgurUploader {
     
     #if canImport(Photos)
 
-    // uses rate limit credits
-    // returned progress supports cancellation
-    // completion block called on main queue
-    // this will trigger "can access photos?" prompt (or crash if missing Info.plist key NSPhotoLibraryUsageDescription)
+    /**
+     Anonymously uploads a Photos asset to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
+     
+     Animated images are somewhat supported: they are uploaded as-is, and if their file size is too large, they are not resized.
+     
+     This upload uses Imgur API rate limit credits.
+     
+     - Parameter asset: A Photos asset with at least one photo representation.
+     - Parameter completion: A closure to call when the upload completes. The closure is always called on the main queue.
+     - Returns: A cancellable `Progress` instance.
+     
+     - Warning: Calling this method will show your user a photo library authorization alert (or crash if your app is missing an `Info.plist` value for the key `NSPhotoLibraryUsageDescription`).
+     */
     @available(macOS 10.13, *)
     @discardableResult
     public func upload(_ asset: PHAsset, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
@@ -122,19 +131,39 @@ public final class ImgurUploader {
     
     #if canImport(UIKit)
     
-    // uses rate limit credits
-    // returned progress supports cancellation
-    // completion block called on main queue
+    /**
+     Anonymously uploads a `UIImage` to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
+     
+     Only `UIImage`s backed by `CGImage` are supported. `CIImage`-backed images will fail immediately.
+     
+     Animated images are somewhat supported: they are saved as a GIF and uploaded as-is, and if their file size is too large, they are not resized. The underlying image framework, ImageIO, is not known for its particularly optimized GIF output.
+     
+     This upload uses Imgur API rate limit credits.
+     
+     - Parameter image: An image instance (animated or not).
+     - Parameter completion: A closure to call when the upload completes. The closure is always called on the main queue.
+     - Returns: A cancellable `Progress` instance.
+     */
     @discardableResult
     public func upload(_ image: UIImage, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
         return upload(imageSaveOperation: SaveUIImage(image), completion: completion)
     }
 
-    // returned progress supports cancellation
-    // completion block called on main queue
-    // if user has allowed photo library access, image data is obtained therefrom; but this method will never result in the user being asked to authorize photo library access. nor will this method crash if your Info.plist has no value for "NSPhotoLibraryUsageDescription"
-    // note that as of iOS 11 (?) you can use an image picker, and this method to upload to imgur, without bothering with "NSPhotoLibraryUsageDescription" or photo library authorization
-    // note that the only way to get animated images out of the image picker is when we have photo library support. ImgurUploader will never request photo library authorization on your behalf, so if animated images are a consideration you should request photo library authorization
+    /**
+     Anonymously uploads a user-chosen image to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.
+     
+     This is a helper method that conveniently calls one of the other overloads of `upload(_completion:)` that take a `PHAsset` or a `UIImage`.
+     
+     If the user has authorized photo library access, image data is obtained directly from the photo library. However, this method will never result in the user being asked to authorize photo library access (and it will not crash if your app's `Info.plist` has no value for `NSPhotoLibraryUsageDescription`). If photo library access has not been authorized, the `UIImage` instance is used instead.
+     
+     Animated images are somewhat supported: if photo library access has been granted, the image data is uploaded as-is. If an animated image's file size is too large, it are not resized and the upload fails. Note that `UIImagePickerController` does not seem to provide animated instances of `UIImage`, so if the user has not authorized photo library access then only the first frame of an animated image is uploaded. Also note that, as mentioned, this method will never result in the user being asked to authorize photo library access; if your user is likely to pick an animated image for upload, consider requesting photo library authorization beforehand.
+     
+     Note that as of iOS 11 (?) you can use a `UIImagePickerController`, and pass the resulting info dictionary to this method, without bothering with `NSPhotoLibraryUsageDescription` or photo library authorization.
+     
+     - Parameter info: An info dictionary as passed to `UIImagePickerControllerDelegate.imagePickerController(_:didFinishPickingMediaWithInfo:)`.
+     - Parameter completion: A closure to call when the upload completes. The closure is always called on the main queue.
+     - Returns: A cancellable `Progress` instance.
+     */
     @discardableResult
     public func upload(_ info: [UIImagePickerController.InfoKey: Any], completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
 
@@ -272,14 +301,22 @@ public final class ImgurUploader {
 
     // MARK: - Rate limiting
     
-    // blah blah upload responses include a POST limit, explain how that works (hourly? from IP address? check docs)
+    /**
+     The Imgur API limits the number of HTTP `POST` requests across all endpoints made from each IP address.
+     */
     public struct PostLimit {
         public let allocation: Int
         public let remaining: Int
         public let timeUntilReset: TimeInterval
     }
     
-    // blah blah client vs. user rate limit etc.
+    /**
+     The Imgur API limits use of certain endpoints at both the client level (your API key, a.k.a. your application as registered with Imgur) and the user level (this particular IP address).
+     
+     There is a per-day client limit. In addition, if you exceed your per-day client limit five (?) times in a month, your API key is banned for the rest of the month.
+     
+     A suggestion: if `userRemaining` is `0`, you might show an error message saying "try again at `userResetDate`"; but if `clientRemaining` is `0`, your error message should just say "try again later".
+     */
     public struct RateLimit: Decodable {
         public let clientAllocation: Int
         public let clientRemaining: Int
@@ -297,10 +334,16 @@ public final class ImgurUploader {
         }
     }
 
-    // does not seem to use credits (thankfully)
-    // does not include POST limits
-    // returned progress supports cancellation
-    // completion block called on main queue
+    /**
+     Retrieve the Imgur API rate limit status for the current client (API key) and user (IP address).
+     
+     Note that each successful `upload(_:completion:)` call will also return rate limit status information. It may still be useful to specifically request rate limit status in order to avoid exceeding the client limits and getting banned for the month.
+     
+     This request does not use Imgur API rate limit credits.
+     
+     - Parameter completion: A closure to call once the request is completed. The closure is always called on the main queue.
+     - Returns: A cancellable `Progress` instance.
+     */
     @discardableResult
     public func checkRateLimitStatus(completion: @escaping (_ result: Result<RateLimit>) -> Void) -> Progress {
         let request = URLRequest(url: URL(string: "https://api.imgur.com/3/credits")!)
@@ -329,9 +372,17 @@ public final class ImgurUploader {
 
     // MARK: - Delete uploaded images
 
-    // (presumably) uses credits
-    // returned progress supports cancellation
-    // completion block called on main queue
+    /**
+     Deletes a previously-uploaded image.
+     
+     Each successful call to an `upload(_:completion:)` method returns, among other info, a delete hash that can be used to delete the uploaded image.
+     
+     Deletion requests presumably use Imgur API rate limit credits, but this has not been tested.
+     
+     - Parameter deleteHash: Which photo to delete. (A `DeleteHash` is passed to the completion closure for each `upload(_:completion:)` method.)
+     - Parameter completion: A closure to call once the request is complete. The closure is always called on the main queue.
+     - Returns: A cancellable `Progress` instance.
+     */
     @discardableResult
     public func delete(_ deleteHash: DeleteHash, completion: @escaping (_ result: Result<Void>) -> Void) -> Progress {
         let url = URL(string: "https://api.imgur.com/3/image/")!
@@ -369,7 +420,11 @@ public final class ImgurUploader {
         return progress
     }
     
-    // blah blah imgur says these follow a certain format but this struct doesn't try to enforce that format
+    /**
+     An opaque string value that can be passed back to Imgur via `delete(_:completion:)`.
+     
+     The Imgur documentation says these follow a particular format, but this struct doesn't bother trying to enforce that format.
+     */
     public struct DeleteHash: RawRepresentable {
         public let rawValue: String
         

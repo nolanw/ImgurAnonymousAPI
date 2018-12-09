@@ -231,6 +231,7 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
             throw ImageError.missingCGImage
         }
 
+        // Save as TIFF here to preserve orientation data (unlike PNG) with lossless image data (unlike JPEG).
         guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypeTIFF, 1, nil) else {
             throw ImageError.destinationCreationFailed
         }
@@ -255,6 +256,8 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
 }
 
 private extension UIImage.Orientation {
+    
+    /// `UIImage.Orientation` and `CGImagePropertyOrientation` don't have the same raw values.
     var cgOrientation: CGImagePropertyOrientation {
         switch self {
         case .up:

@@ -5,7 +5,7 @@ import Foundation
 /**
  An abstract class for all operations in this project.
  
- Subclasses must implement `execute()`. Implementations must be ready to run on any thread. An implementation of `execute()`.
+ Subclasses must implement `execute()`. Implementations must be ready to run on any thread.
  
  Provides the following features:
  
