@@ -72,7 +72,13 @@ final class ViewController: UIViewController {
         picker.delegate = self
         present(picker, animated: true)
     }
-
+    
+    @IBAction func didTapRequestPhotoAuth(_ sender: Any) {
+        PHPhotoLibrary.requestAuthorization { status in
+            print("photo authorization status is \(status.rawValue)")
+        }
+    }
+    
     @IBAction private func didTapShowUpload(_ sender: Any) {
         guard let link = link else {
             return alert(MissingLink())
