@@ -188,7 +188,7 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
             throw ImageError.missingCGImage
         }
 
-        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypePNG, 1, nil) else {
+        guard let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypeTIFF, 1, nil) else {
             throw ImageError.destinationCreationFailed
         }
 
