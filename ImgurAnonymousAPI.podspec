@@ -1,12 +1,12 @@
 Pod::Spec.new do |s|
   s.name          = "ImgurAnonymousAPI"
-  s.version       = "1.0"
+  s.version       = `/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" Framework/Info.plist`.trim
   s.summary       = "Upload images 'anonymously' to Imgur."
   s.homepage      = "https://github.com/nolanw/ImgurAnonymousAPI"
   s.license       = "Public domain"
   s.authors       = { "Nolan Waite" => "nolan@nolanw.ca" }
 
-  s.source        = { :git => "https://github.com/nolanw/ImgurAnonymousAPI", :tag => "#{s.version}" }
+  s.source        = { :git => "https://github.com/nolanw/ImgurAnonymousAPI.git", :tag => "#{s.version}" }
   s.source_files  = "Sources/*.swift"
   s.swift_version = "4.2"
 
