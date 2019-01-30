@@ -13,8 +13,5 @@ let package = Package(
         .target(
             name: "ImgurAnonymousAPI",
             dependencies: []),
-        .testTarget(
-            name: "ImgurAnonymousAPITests",
-            dependencies: ["ImgurAnonymousAPI"]),
     ]
 )

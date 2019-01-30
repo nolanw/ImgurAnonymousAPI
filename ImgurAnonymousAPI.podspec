@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.authors       = { "Nolan Waite" => "nolan@nolanw.ca" }
   s.platform      = :ios, "9.0"
   s.source        = { :git => "https://github.com/nolanw/ImgurAnonymousAPI", :tag => "#{s.version}" }
-  s.source_files  = "Sources/ImgurAnonymousAPI/*.swift"
+  s.source_files  = "Sources/*.swift"
   s.swift_version = "4.2"
   s.frameworks    = "ImageIO", "Photos", "UIKit"
 end
