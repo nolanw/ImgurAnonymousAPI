@@ -119,7 +119,7 @@ public final class ImgurUploader {
      
      - Warning: Calling this method will show your user a photo library authorization alert (or crash if your app is missing an `Info.plist` value for the key `NSPhotoLibraryUsageDescription`).
      */
-    @available(macOS 10.13, *)
+    @available(macOS 10.13, tvOS 10.0, *)
     @discardableResult
     public func upload(_ asset: PHAsset, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
         return upload(imageSaveOperation: SavePHAsset(asset), completion: completion)
@@ -148,6 +148,10 @@ public final class ImgurUploader {
     public func upload(_ image: UIImage, completion: @escaping (_ result: Result<UploadResponse>) -> Void) -> Progress {
         return upload(imageSaveOperation: SaveUIImage(image), completion: completion)
     }
+    
+    #endif
+    
+    #if canImport(UIKit) && !os(tvOS) && !os(watchOS)
 
     /**
      Anonymously uploads a user-chosen image to Imgur, resizing the image as necessary to fit under the Imgur Upload API's maximum file size limit.

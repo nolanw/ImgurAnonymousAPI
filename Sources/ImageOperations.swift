@@ -112,6 +112,7 @@ internal final class ResizeImage: AsynchronousOperation<ImageFile> {
 import Photos
 
 /// Retrieves image data for a `PHAsset` and saves it to a file in a temporary folder.
+@available(macOS 10.13, tvOS 10.0, *)
 internal final class SavePHAsset: AsynchronousOperation<ImageFile> {
     
     /// Returns `true` when the app has a photo library usage description and the user has authorized said access.
@@ -241,7 +242,7 @@ internal final class SaveUIImage: AsynchronousOperation<ImageFile> {
                 kCGImagePropertyHasAlpha: true,
                 kCGImagePropertyOrientation: image.imageOrientation.cgOrientation.rawValue]
 
-            if #available(iOS 9.3, *) {
+            if #available(iOS 9.3, tvOS 9.3, watchOS 2.3, *) {
                 options[kCGImageDestinationOptimizeColorForSharing] = true
             }
 

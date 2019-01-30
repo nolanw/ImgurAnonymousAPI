@@ -11,14 +11,11 @@ Pod::Spec.new do |s|
   s.swift_version = "4.2"
 
   s.ios.deployment_target = "9.0"
-  s.ios.frameworks = "ImageIO", "Photos", "UIKit"
-
-  s.osx.deployment_target = "10.11"
-  s.osx.frameworks = "ImageIO", "Photos"
+  s.ios.frameworks = "ImageIO", "MobileCoreServices", "Photos", "UIKit"
 
   s.tvos.deployment_target = "9.0"
-  s.tvos.frameworks = "ImageIO"
+  s.tvos.frameworks = "ImageIO", "MobileCoreServices"
 
   s.watchos.deployment_target = "2.0"
-  s.watchos.frameworks = "ImageIO"
+  s.watchos.frameworks = "ImageIO", "MobileCoreServices"
 end

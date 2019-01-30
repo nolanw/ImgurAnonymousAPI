@@ -2,7 +2,12 @@
 
 import Foundation
 import ImageIO
-import MobileCoreServices
+
+#if canImport(CoreServices)
+    import CoreServices
+#else
+    import MobileCoreServices
+#endif
 
 internal struct FormDataFile {
     let boundary: String
