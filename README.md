@@ -2,7 +2,7 @@
 
 Uploads images "anonymously" (i.e. unassociated with an account) using version 3 of the Imgur API.
 
-This project is focused on taking an image in an iOS app and uploading it to Imgur. It has no interest in providing a full-featured Imgur API client or in working effectively on other platforms. Because the scope is so narrow, we can make the functionality we do offer as comfortable as possible:
+This project is focused on taking an image in an app and uploading it to Imgur. It has no interest in providing a full-featured Imgur API client. Because the scope is so narrow, we can make the functionality we do offer as comfortable as possible:
 
 * We accept the image types you're probably already using.
 * We make it easy to upload images directly from an image picker.
