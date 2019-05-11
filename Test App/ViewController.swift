@@ -145,6 +145,7 @@ final class ViewController: UIViewController {
             
         case .failure(let error):
             resultsTextView?.text = "boo!\n\(error)"
+            alert(error)
         }
         update()
     }
@@ -155,12 +156,23 @@ final class ViewController: UIViewController {
             resultsTextView?.text = "hooray!\n\(value)"
         case .failure(let error):
             resultsTextView?.text = "boo!\n\(error)"
+            alert(error)
         }
         update()
     }
 
     private func alert(_ error: Error) {
-        let alert = UIAlertController(title: "Error", message: "\(error)", preferredStyle: .alert)
+        let title: String
+        let message: String
+        switch error {
+        case let error as LocalizedError:
+            title = error.errorDescription ?? "Error"
+            message = error.failureReason ?? "\(error)"
+        default:
+            title = "Error"
+            message = "\(error)"
+        }
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(.init(title: "OK", style: .default))
         present(alert, animated: true)
     }

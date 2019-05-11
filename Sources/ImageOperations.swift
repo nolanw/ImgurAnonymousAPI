@@ -7,7 +7,7 @@ internal struct ImageFile {
     let url: URL
 }
 
-internal enum ImageError: Error {
+internal enum ImageError: LocalizedError {
     case destinationCreationFailed
     case destinationFinalizationFailed
     case indeterminateOriginalFileSize
@@ -16,6 +16,27 @@ internal enum ImageError: Error {
     case missingPhotoResource
     case sourceCreationFailed
     case thumbnailCreationFailed
+
+    var errorDescription: String? {
+        switch self {
+        case .destinationCreationFailed:
+            return "Could not make space to save resized image"
+        case .destinationFinalizationFailed:
+            return "Could not save resized image"
+        case .indeterminateOriginalFileSize:
+            return "Could not calculate original image file size"
+        case .indeterminateThumbnailFileSize:
+            return "Could not calculate resized image file size"
+        case .missingCGImage:
+            return "Original image is not a recognized format"
+        case .missingPhotoResource:
+            return "Could not find photo data"
+        case .sourceCreationFailed:
+            return "Could not find image"
+        case .thumbnailCreationFailed:
+            return "Could not resize image"
+        }
+    }
 }
 
 /**

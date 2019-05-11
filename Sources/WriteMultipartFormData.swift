@@ -14,10 +14,18 @@ internal struct FormDataFile {
     let url: URL
 }
 
-internal enum WriteError: Error {
-    case couldNotReadImageFile
-    case couldNotReadPartOfImageFile
+internal enum WriteError: CustomNSError {
     case failedWritingData(underlyingError: Error)
+
+    var errorUserInfo: [String: Any] {
+        switch self {
+        case .failedWritingData(underlyingError: let underlyingError):
+            return [
+                NSLocalizedDescriptionKey: "Upload request",
+                NSLocalizedFailureReasonErrorKey: "Could not write request data",
+                NSUnderlyingErrorKey: underlyingError]
+        }
+    }
 }
 
 internal final class WriteMultipartFormData: AsynchronousOperation<FormDataFile> {
