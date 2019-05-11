@@ -122,12 +122,16 @@ internal final class SavePHAsset: AsynchronousOperation<ImageFile> {
         if #available(iOS 10.0, *), Bundle.main.infoDictionary?["NSPhotoLibraryUsageDescription"] == nil {
             return false
         }
-        
-        switch PHPhotoLibrary.authorizationStatus() {
+
+        let status = PHPhotoLibrary.authorizationStatus()
+        switch status {
         case .denied, .notDetermined, .restricted:
             return false
         case .authorized:
             return true
+        @unknown default:
+            assertionFailure("handle unknown photo library authorization status: \(status.rawValue)")
+            return false
         }
     }
     
@@ -277,6 +281,8 @@ private extension UIImage.Orientation {
             return .leftMirrored
         case .rightMirrored:
             return .rightMirrored
+        @unknown default:
+            fatalError("handle unknown UIImage orientation: \(self.rawValue)")
         }
     }
 }

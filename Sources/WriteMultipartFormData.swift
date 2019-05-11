@@ -68,16 +68,12 @@ private func makeTopData(boundary: String, mimeType: String) -> DispatchData {
         ]
         .joined(separator: "\r\n")
         .data(using: .utf8)!
-    return top.withUnsafeBytes {
-        DispatchData(bytes: UnsafeRawBufferPointer(start: $0, count: top.count))
-    }
+    return top.withUnsafeBytes { DispatchData(bytes: $0) }
 }
 
 private func makeBottomData(boundary: String) -> DispatchData {
     let end = "\r\n--\(boundary)--".data(using: .utf8)!
-    return end.withUnsafeBytes {
-        DispatchData(bytes: UnsafeRawBufferPointer(start: $0, count: end.count))
-    }
+    return end.withUnsafeBytes { DispatchData(bytes: $0) }
 }
 
 /// - Seealso: `writeConcatenatedPieces(_:to:completion:)`
